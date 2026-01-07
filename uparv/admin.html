@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin • VideoShare</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #f3f4f6;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      width: 320px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.15);
+      text-align: center;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .on { 
+      background: #ef4444; 
+      color: white; 
+    }
+    .on:hover {
+      background: #dc2626;
+    }
+    .off { 
+      background: #10b981; 
+      color: white; 
+    }
+    .off:hover {
+      background: #059669;
+    }
+    .toggle-btn {
+      background: #3b82f6;
+      color: white;
+    }
+    .toggle-btn:hover {
+      background: #2563eb;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .online { background: #10b981; }
+    .maintenance { background: #ef4444; animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    .json-display {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      text-align: left;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Painel Admin VideoShare</h2>
+  <p>Status atual:</p>
+  <strong id="status">
+    <span class="status-indicator" id="statusIndicator"></span>
+    <span id="statusText">Carregando...</span>
+  </strong>
+
+  <div class="json-display" id="jsonDisplay">
+    { "maintenance": false }
+  </div>
+
+  <button class="on" onclick="mudarPara(true)">Definir como TRUE</button>
+  <button class="off" onclick="mudarPara(false)">Definir como FALSE</button>
+  <button class="toggle-btn" onclick="alternarEstado()">Alternar Estado (TRUE ↔ FALSE)</button>
+  
+  <div style="margin-top: 20px; font-size: 12px; color: #64748b;">
+    <p>Valor atual: <strong id="valorAtual">false</strong></p>
+  </div>
+</div>
+
+<script>
+// Chave para armazenamento local
+const CONFIG_KEY = 'videoshare_config';
+
+// Configuração padrão
+const defaultConfig = {
+  maintenance: false,
+  lastUpdated: new Date().toISOString()
+};
+
+// Carrega configuração do localStorage
+function carregarConfig() {
+  const saved = localStorage.getItem(CONFIG_KEY);
+  if (saved) {
+    return JSON.parse(saved);
+  }
+  // Salva configuração padrão se não existir
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(defaultConfig));
+  return defaultConfig;
+}
+
+// Salva configuração no localStorage
+function salvarConfig(config) {
+  config.lastUpdated = new Date().toISOString();
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  return config;
+}
+
+// Atualiza a interface com o estado atual
+function atualizarInterface() {
+  const config = carregarConfig();
+  const statusText = document.getElementById('statusText');
+  const statusIndicator = document.getElementById('statusIndicator');
+  const jsonDisplay = document.getElementById('jsonDisplay');
+  const valorAtual = document.getElementById('valorAtual');
+  
+  // Atualiza status visual
+  if (config.maintenance) {
+    statusText.textContent = 'EM MANUTENÇÃO (TRUE)';
+    statusIndicator.className = 'status-indicator maintenance';
+  } else {
+    statusText.textContent = 'ONLINE (FALSE)';
+    statusIndicator.className = 'status-indicator online';
+  }
+  
+  // Atualiza exibição do JSON
+  jsonDisplay.textContent = JSON.stringify({ maintenance: config.maintenance }, null, 2);
+  
+  // Atualiza valor atual
+  valorAtual.textContent = config.maintenance.toString();
+  
+  // Destaque visual baseado no valor
+  if (config.maintenance) {
+    jsonDisplay.style.borderColor = '#ef4444';
+    jsonDisplay.style.background = '#fef2f2';
+  } else {
+    jsonDisplay.style.borderColor = '#10b981';
+    jsonDisplay.style.background = '#f0fdf4';
+  }
+}
+
+// Muda o estado para um valor específico (true ou false)
+function mudarPara(valor) {
+  const config = carregarConfig();
+  config.maintenance = valor;
+  salvarConfig(config);
+  
+  // Feedback visual no botão clicado
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = `✓ DEFINIDO COMO ${valor}`;
+  
+  setTimeout(() => {
+    btn.textContent = originalText;
+    atualizarInterface();
+  }, 800);
+  
+  atualizarInterface();
+  console.log(`Manutenção definida como: ${valor}`);
+}
+
+// Alterna entre true e false
+function alternarEstado() {
+  const config = carregarConfig();
+  // Alterna o valor (se for true vira false, se for false vira true)
+  config.maintenance = !config.maintenance;
+  salvarConfig(config);
+  
+  // Feedback visual
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = `✓ ALTERADO PARA ${config.maintenance}`;
+  
+  setTimeout(() => {
+    btn.textContent = originalText;
+    atualizarInterface();
+  }, 800);
+  
+  atualizarInterface();
+  console.log(`Manutenção alternada para: ${config.maintenance}`);
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+  // Garante que existe uma configuração salva
+  if (!localStorage.getItem(CONFIG_KEY)) {
+    salvarConfig(defaultConfig);
+  }
+  
+  atualizarInterface();
+  
+  // Adiciona teclas de atalho
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 't' || e.key === 'T') mudarPara(true);
+    if (e.key === 'f' || e.key === 'F') mudarPara(false);
+    if (e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault();
+      alternarEstado();
+    }
+  });
+  
+  // Exibe instruções no console
+  console.log('📺 Controle de Manutenção VideoShare');
+  console.log('- Pressione T para definir como TRUE');
+  console.log('- Pressione F para definir como FALSE');
+  console.log('- Pressione ESPAÇO para alternar estado');
+  console.log('- Valor atual:', carregarConfig().maintenance);
+});
+</script>
+
+</body>
+</html>

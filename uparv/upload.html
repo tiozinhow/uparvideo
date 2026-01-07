@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Vídeo - VideoShare Offline</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cloud-upload-alt"></i> Enviar Vídeo</h1>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="upload-container">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Arraste e solte seu vídeo aqui</h3>
+                <p>ou clique para selecionar</p>
+                <p class="formats">Formatos suportados: MP4, WebM, AVI, MOV, etc.</p>
+                <input type="file" id="fileInput" accept="video/*" hidden>
+            </div>
+
+            <div class="video-preview" id="videoPreview" style="display: none;">
+                <h3>Pré-visualização</h3>
+                <div class="preview-container">
+                    <video id="previewVideo" controls></video>
+                </div>
+                <div class="video-info-preview">
+                    <p><strong>Arquivo:</strong> <span id="fileName"></span></p>
+                    <p><strong>Tamanho:</strong> <span id="fileSize"></span></p>
+                    <p><strong>Duração:</strong> <span id="fileDuration"></span></p>
+                </div>
+            </div>
+
+            <div class="upload-form" id="uploadForm" style="display: none;">
+                <div class="form-group">
+                    <label for="videoTitle">
+                        <i class="fas fa-heading"></i> Título do Vídeo
+                    </label>
+                    <input type="text" id="videoTitle" placeholder="Digite um título para o vídeo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="videoDescription">
+                        <i class="fas fa-align-left"></i> Descrição (opcional)
+                    </label>
+                    <textarea id="videoDescription" placeholder="Descreva seu vídeo..." rows="3"></textarea>
+                </div>
+
+                <div class="upload-actions">
+                    <button onclick="cancelUpload()" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button onclick="processUpload()" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Enviar Vídeo
+                    </button>
+                </div>
+
+                <div class="upload-progress" id="uploadProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Processando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        let currentVideo = null;
+        let videoDuration = 0;
+
+        // Configurar área de upload
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewVideo = document.getElementById('previewVideo');
+        const videoPreview = document.getElementById('videoPreview');
+        const uploadForm = document.getElementById('uploadForm');
+
+        // Drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            uploadArea.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            uploadArea.classList.remove('highlight');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFileSelect() {
+            handleFiles(this.files);
+        }
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            const file = files[0];
+            if (!file.type.startsWith('video/')) {
+                alert('Por favor, selecione um arquivo de vídeo válido');
+                return;
+            }
+
+            currentVideo = file;
+            showPreview(file);
+        }
+
+        function showPreview(file) {
+            const fileURL = URL.createObjectURL(file);
+            
+            previewVideo.src = fileURL;
+            videoPreview.style.display = 'block';
+            
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            
+            // Quando o vídeo carregar, mostrar duração
+            previewVideo.onloadedmetadata = () => {
+                videoDuration = previewVideo.duration;
+                document.getElementById('fileDuration').textContent = formatDuration(videoDuration);
+            };
+            
+            // Mostrar formulário
+            uploadForm.style.display = 'block';
+            
+            // Rolar para a pré-visualização
+            videoPreview.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function processUpload() {
+            if (!currentVideo) return;
+            
+            const title = document.getElementById('videoTitle').value.trim();
+            if (!title) {
+                alert('Por favor, digite um título para o vídeo');
+                return;
+            }
+            
+            // Mostrar progresso
+            const progress = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progress.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Processando vídeo...';
+            
+            try {
+                // Criar thumbnail
+                progressText.textContent = 'Criando miniatura...';
+                const thumbnail = await createThumbnail(currentVideo);
+                
+                // Ler vídeo como base64
+                progressText.textContent = 'Convertendo vídeo...';
+                const dataUrl = await readFileAsDataURL(currentVideo);
+                
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Salvando no banco de dados...';
+                
+                const videoData = {
+                    id: generateId(),
+                    title: title,
+                    description: document.getElementById('videoDescription').value,
+                    filename: currentVideo.name,
+                    type: currentVideo.type,
+                    size: currentVideo.size,
+                    duration: videoDuration,
+                    data: dataUrl,
+                    thumbnail: thumbnail,
+                    uploadDate: new Date().toISOString()
+                };
+                
+                // Salvar no IndexedDB
+                await saveVideo(videoData);
+                
+                // Atualizar UI
+                progressText.textContent = 'Vídeo salvo com sucesso!';
+                
+                // Redirecionar para a página principal após 1 segundo
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                alert('Erro ao processar o vídeo: ' + error.message);
+                progress.style.display = 'none';
+            }
+        }
+
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function cancelUpload() {
+            if (confirm('Tem certeza que deseja cancelar o upload?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDuration(seconds) {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            
+            if (hrs > 0) {
+                return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>

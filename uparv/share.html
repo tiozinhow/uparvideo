@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compartilhar Vídeo | VideoShare Ultra</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        /* Estilos específicos para compartilhamento */
+        .share-page {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .share-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .share-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .share-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .method-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: #3b82f6;
+        }
+        
+        .method-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .method-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .method-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .qr-container {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .qr-code {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .share-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .code-display {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            font-family: monospace;
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.2em;
+            margin: 1rem 0;
+            border: 2px dashed var(--border-color);
+        }
+        
+        .file-drop-area {
+            border: 3px dashed #3b82f6;
+            border-radius: 1rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-drop-area:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #2563eb;
+        }
+        
+        .file-drop-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .device-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .device-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .device-item:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .device-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+        
+        .progress-container {
+            background: var(--bg-tertiary);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <!-- Navegação -->
+    <nav class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">🔗</div>
+            <div class="logo-text">
+                <h1>Compartilhar</h1>
+                <p class="logo-subtitle">VideoShare Ultra</p>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Voltar</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content share-page">
+        <div class="share-header">
+            <h1>📤 Compartilhar Vídeo</h1>
+            <p>Escolha como deseja compartilhar seus vídeos offline</p>
+        </div>
+
+        <!-- Métodos de Compartilhamento -->
+        <div class="share-methods">
+            <!-- Método 1: Arquivo -->
+            <div class="method-card" onclick="showFileShare()">
+                <div class="method-icon">💾</div>
+                <h3 class="method-title">Arquivo .vshare</h3>
+                <p class="method-description">
+                    Exporte um arquivo que pode ser enviado por email, WhatsApp, Bluetooth, etc.
+                    A outra pessoa importa o arquivo no aplicativo.
+                </p>
+                <div class="share-actions">
+                    <button class="btn btn-primary">Exportar Arquivo</button>
+                </div>
+            </div>
+
+            <!-- Método 2: QR Code -->
+            <div class="method-card" onclick="showQRShare()">
+                <div class="method-icon">📱</div>
+                <h3 class="method-title">QR Code</h3>
+                <p class="method-description">
+                    Gere um QR Code que pode ser escaneado por outro dispositivo.
+                    Funciona sem internet!
+                </p>
+                <div class="share-actions">
+                    <button class="btn btn-primary">Gerar QR Code</button>
+                </div>
+            </div>
+
+            <!-- Método 3: Código -->
+            <div class="method-card" onclick="showCodeShare()">
+                <div class="method-icon">🔢</div>
+                <h3 class="method-title">Código</h3>
+                <p class="method-description">
+                    Gere um código de 6 dígitos que pode ser compartilhado.
+                    A outra pessoa digita o código para acessar.
+                </p>
+                <div class="share-actions">
+                    <button class="btn btn-primary">Gerar Código</button>
+                </div>
+            </div>
+
+            <!-- Método 4: Web Share -->
+            <div class="method-card" onclick="showWebShare()">
+                <div class="method-icon">📲</div>
+                <h3 class="method-title">Compartilhamento Nativo</h3>
+                <p class="method-description">
+                    Use o compartilhamento nativo do dispositivo (Android/iOS).
+                    Envia o arquivo direto para outros apps.
+                </p>
+                <div class="share-actions">
+                    <button class="btn btn-primary">Compartilhar Agora</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Importação -->
+        <div class="import-section">
+            <h2>📥 Importar Vídeo Compartilhado</h2>
+            
+            <!-- Importar por Arquivo -->
+            <div class="file-drop-area" id="fileDropArea">
+                <div class="file-drop-icon">📁</div>
+                <h3>Arraste e solte arquivos .vshare aqui</h3>
+                <p>ou clique para selecionar</p>
+                <input type="file" id="importFile" accept=".vshare" hidden>
+                <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">
+                    Selecionar Arquivo
+                </button>
+            </div>
+            
+            <!-- Importar por Código -->
+            <div style="margin-top: 2rem;">
+                <h4>Ou digite um código de compartilhamento:</h4>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <input type="text" id="shareCodeInput" placeholder="Digite o código de 6 dígitos" 
+                           style="flex: 1; padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); background: var(--bg-tertiary); color: var(--text-primary);">
+                    <button class="btn btn-primary" onclick="useShareCode()">
+                        Usar Código
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispositivos Encontrados -->
+        <div class="device-discovery" id="deviceDiscovery" style="display: none; margin-top: 3rem;">
+            <h2>📡 Dispositivos Próximos</h2>
+            <p>Dispositivos na mesma rede que podem receber seu vídeo:</p>
+            <div class="device-list" id="deviceList">
+                <!-- Dispositivos serão listados aqui -->
+            </div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div class="modal" id="qrModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📱 QR Code de Compartilhamento</h3>
+                    <button class="modal-close" onclick="closeModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div id="qrCodeContainer"></div>
+                    <div class="code-display" id="shareCodeDisplay"></div>
+                    <p style="text-align: center; margin-top: 1rem;">
+                        Escaneie este QR Code com outro dispositivo
+                    </p>
+                    <div class="share-actions">
+                        <button class="btn btn-primary" onclick="downloadQR()">
+                            📥 Baixar QR Code
+                        </button>
+                        <button class="btn btn-outline" onclick="printQR()">
+                            🖨️ Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progresso de Compartilhamento -->
+        <div class="modal" id="progressModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>⏳ Compartilhando...</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="progress-container">
+                        <p id="progressMessage">Preparando para compartilhar...</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <span id="progressPercent">0%</span>
+                            <span id="progressSpeed">0 KB/s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/share.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@latest/build/qrcode.min.js"></script>
+    
+    <script>
+        let currentVideoId = null;
+        let currentShareMethod = null;
+        let qrCodeData = null;
+
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar se há parâmetros na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareCode = urlParams.get('code');
+            const shareData = urlParams.get('share');
+            
+            if (shareCode) {
+                // Tentar usar código da URL
+                document.getElementById('shareCodeInput').value = shareCode;
+                useShareCode();
+            }
+            
+            if (shareData) {
+                // Processar dados de compartilhamento da URL
+                processShareData(shareData);
+            }
+            
+            // Configurar drag and drop
+            setupFileDrop();
+            
+            // Iniciar descoberta de dispositivos
+            startDeviceDiscovery();
+        });
+
+        // Mostrar compartilhamento por arquivo
+        async function showFileShare() {
+            const videos = await VideoDB.getAllVideos();
+            if (videos.length === 0) {
+                alert('Nenhum vídeo para compartilhar');
+                return;
+            }
+            
+            // Criar menu de seleção
+            const videoList = videos.map(video => `
+                <div class="device-item" onclick="exportVideoFile('${video.id}')">
+                    <div class="device-icon">🎬</div>
+                    <div>
+                        <strong>${video.title}</strong>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                            ${formatFileSize(video.size)} • ${formatDuration(video.duration)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            const modal = document.getElementById('qrModal');
+            const content = document.getElementById('qrCodeContainer');
+            
+            content.innerHTML = `
+                <h4 style="margin-bottom: 1rem;">Selecione um vídeo para exportar:</h4>
+                <div class="device-list">
+                    ${videoList}
+                </div>
+                <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                    O arquivo .vshare contém o vídeo e pode ser importado em outro dispositivo
+                </p>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        // Exportar vídeo para arquivo
+        async function exportVideoFile(videoId) {
+            try {
+                showProgress('Exportando vídeo...');
+                
+                const result = await ShareManager.exportVideo(videoId);
+                
+                hideProgress();
+                closeModal();
+                
+                alert(`Vídeo exportado com sucesso!\nArquivo: ${result.filename}\nTamanho: ${formatFileSize(result.size)}`);
+                
+            } catch (error) {
+                hideProgress();
+                alert(`Erro ao exportar: ${error.message}`);
+            }
+        }
+
+        // Mostrar compartilhamento por QR Code
+        async function showQRShare() {
+            const videos = await VideoDB.getAllVideos();
+            if (videos.length === 0) {
+                alert('Nenhum vídeo para compartilhar');
+                return;
+            }
+            
+            // Selecionar primeiro vídeo (em produção, deixar usuário escolher)
+            const video = videos[0];
+            currentVideoId = video.id;
+            
+            // Gerar QR Code
+            const result = await ShareManager.generateShareQR(video.id);
+            qrCodeData = result;
+            
+            // Gerar código visual
+            if (window.QRCode) {
+                const container = document.getElementById('qrCodeContainer');
+                container.innerHTML = '';
+                
+                QRCode.toCanvas(result.url, { 
+                    width: 300,
+                    margin: 2,
+                    color: {
+                        dark: '#000000',
+                        light: '#FFFFFF'
+                    }
+                }, (err, canvas) => {
+                    if (err) {
+                        container.innerHTML = `<p style="color: red;">Erro ao gerar QR Code</p>`;
+                        return;
+                    }
+                    
+                    container.appendChild(canvas);
+                });
+            }
+            
+            // Mostrar código
+            document.getElementById('shareCodeDisplay').textContent = 
+                result.url.split('share=')[1]?.substring(0, 20) + '...';
+            
+            // Mostrar modal
+            document.getElementById('qrModal').style.display = 'flex';
+        }
+
+        // Mostrar compartilhamento por código
+        async function showCodeShare() {
+            const videos = await VideoDB.getAllVideos();
+            if (videos.length === 0) {
+                alert('Nenhum vídeo para compartilhar');
+                return;
+            }
+            
+            const video = videos[0]; // Selecionar primeiro
+            currentVideoId = video.id;
+            
+            // Gerar código
+            const result = ShareManager.generateShareCode(video.id);
+            
+            // Mostrar código
+            const modal = document.getElementById('qrModal');
+            const content = document.getElementById('qrCodeContainer');
+            
+            content.innerHTML = `
+                <h3 style="text-align: center; margin-bottom: 1rem;">Código de Compartilhamento</h3>
+                <div class="code-display" style="font-size: 2.5rem; padding: 2rem;">
+                    ${result.code}
+                </div>
+                <p style="text-align: center; color: var(--text-secondary);">
+                    Compartilhe este código com outra pessoa<br>
+                    Válido até: ${new Date(result.expiresAt).toLocaleDateString()}
+                </p>
+                <div class="share-actions">
+                    <button class="btn btn-primary" onclick="copyToClipboard('${result.code}')">
+                        📋 Copiar Código
+                    </button>
+                    <button class="btn btn-outline" onclick="copyToClipboard('${result.shareUrl}')">
+                        🔗 Copiar Link
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        // Mostrar compartilhamento nativo
+        async function showWebShare() {
+            const videos = await VideoDB.getAllVideos();
+            if (videos.length === 0) {
+                alert('Nenhum vídeo para compartilhar');
+                return;
+            }
+            
+            const video = videos[0];
+            
+            try {
+                showProgress('Preparando compartilhamento...');
+                
+                await ShareManager.shareViaWebAPI(video.id);
+                
+                hideProgress();
+                alert('Compartilhamento iniciado!');
+                
+            } catch (error) {
+                hideProgress();
+                
+                // Fallback para exportação
+                if (confirm('Compartilhamento nativo não disponível. Exportar como arquivo?')) {
+                    exportVideoFile(video.id);
+                }
+            }
+        }
+
+        // Usar código de compartilhamento
+        async function useShareCode() {
+            const code = document.getElementById('shareCodeInput').value.trim().toUpperCase();
+            
+            if (!code || code.length !== 6) {
+                alert('Digite um código válido de 6 dígitos');
+                return;
+            }
+            
+            try {
+                showProgress('Buscando vídeo...');
+                
+                const result = await ShareManager.useShareCode(code);
+                
+                hideProgress();
+                
+                alert(`Vídeo encontrado!\n\nTítulo: ${result.video.title}\nUsos restantes: ${result.remainingUses}`);
+                
+                // Redirecionar para player
+                window.location.href = `player.html?id=${result.video.id}`;
+                
+            } catch (error) {
+                hideProgress();
+                alert(`Erro: ${error.message}`);
+            }
+        }
+
+        // Processar dados de compartilhamento
+        async function processShareData(shareData) {
+            try {
+                const result = await ShareManager.processQRCode(shareData);
+                
+                if (result.valid) {
+                    if (result.hasPassword) {
+                        const password = prompt('Este vídeo está protegido por senha. Digite a senha:');
+                        if (!password) return;
+                        
+                        // Verificar senha (implementar)
+                        const hashed = await ShareManager.hashPassword(password);
+                        if (hashed !== result.data.p) {
+                            alert('Senha incorreta');
+                            return;
+                        }
+                    }
+                    
+                    // Buscar vídeo (simulação - em produção, buscar por ID)
+                    alert('Vídeo encontrado! Redirecionando...');
+                    // window.location.href = `player.html?share=${shareData}`;
+                } else {
+                    alert('Dados de compartilhamento inválidos');
+                }
+            } catch (error) {
+                alert('Erro ao processar dados');
+            }
+        }
+
+        // Configurar drag and drop
+        function setupFileDrop() {
+            const dropArea = document.getElementById('fileDropArea');
+            const fileInput = document.getElementById('importFile');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            function highlight() {
+                dropArea.style.borderColor = '#3b82f6';
+                dropArea.style.background = 'rgba(59, 130, 246, 0.1)';
+            }
+            
+            function unhighlight() {
+                dropArea.style.borderColor = '';
+                dropArea.style.background = '';
+            }
+            
+            function handleDrop(e) {
+                const files = e.dataTransfer.files;
+                handleFiles(files);
+            }
+            
+            function handleFileSelect(e) {
+                const files = e.target.files;
+                handleFiles(files);
+            }
+            
+            async function handleFiles(files) {
+                for (const file of files) {
+                    if (file.name.endsWith('.vshare')) {
+                        await importShareFile(file);
+                    } else if (file.type.startsWith('video/')) {
+                        await importVideoFile(file);
+                    }
+                }
+            }
+        }
+
+        // Importar arquivo .vshare
+        async function importShareFile(file) {
+            try {
+                showProgress(`Importando ${file.name}...`);
+                
+                const result = await ShareManager.importVideo(file);
+                
+                hideProgress();
+                
+                alert(`Vídeo importado com sucesso!\n\nTítulo: ${result.video.title}`);
+                
+                // Recarregar página ou atualizar lista
+                window.location.href = `index.html`;
+                
+            } catch (error) {
+                hideProgress();
+                alert(`Erro ao importar: ${error.message}`);
+            }
+        }
+
+        // Importar arquivo de vídeo direto
+        async function importVideoFile(file) {
+            try {
+                showProgress(`Processando ${file.name}...`);
+                
+                // Ler como base64
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                
+                reader.onload = async (e) => {
+                    const video = {
+                        id: ShareManager.generateId(),
+                        title: file.name.replace(/\.[^/.]+$/, ""),
+                        data: e.target.result,
+                        type: file.type,
+                        size: file.size,
+                        duration: 0, // Será calculado depois
+                        createdAt: new Date().toISOString(),
+                        importedAt: new Date().toISOString()
+                    };
+                    
+                    await VideoDB.saveVideo(video);
+                    
+                    hideProgress();
+                    alert('Vídeo importado com sucesso!');
+                    window.location.href = 'index.html';
+                };
+                
+                reader.onerror = () => {
+                    hideProgress();
+                    alert('Erro ao ler arquivo');
+                };
+                
+            } catch (error) {
+                hideProgress();
+                alert(`Erro: ${error.message}`);
+            }
+        }
+
+        // Iniciar descoberta de dispositivos
+        function startDeviceDiscovery() {
+            // Em produção, isso usaria WebRTC ou WebSockets
+            setTimeout(() => {
+                // Simular dispositivos encontrados
+                const devices = [
+                    { id: 'device1', name: 'Celular do João', type: 'mobile' },
+                    { id: 'device2', name: 'Tablet da Maria', type: 'tablet' },
+                    { id: 'device3', name: 'Notebook da Sala', type: 'laptop' }
+                ];
+                
+                if (devices.length > 0) {
+                    const deviceList = document.getElementById('deviceList');
+                    deviceList.innerHTML = devices.map(device => `
+                        <div class="device-item" onclick="sendToDevice('${device.id}')">
+                            <div class="device-icon">${device.type === 'mobile' ? '📱' : device.type === 'tablet' ? '📟' : '💻'}</div>
+                            <div>
+                                <strong>${device.name}</strong>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                    ${device.type === 'mobile' ? 'Celular' : device.type === 'tablet' ? 'Tablet' : 'Computador'}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    document.getElementById('deviceDiscovery').style.display = 'block';
+                }
+            }, 2000);
+        }
+
+        // Enviar para dispositivo
+        async function sendToDevice(deviceId) {
+            if (!currentVideoId) {
+                alert('Selecione um vídeo primeiro');
+                return;
+            }
+            
+            try {
+                showProgress('Conectando com dispositivo...');
+                
+                // Em produção, isso usaria WebRTC
+                setTimeout(() => {
+                    hideProgress();
+                    alert('Conexão estabelecida! Em produção, o vídeo seria enviado via WebRTC.');
+                }, 1500);
+                
+            } catch (error) {
+                hideProgress();
+                alert('Erro ao conectar com dispositivo');
+            }
+        }
+
+        // Utilitários
+        function showProgress(message) {
+            document.getElementById('progressMessage').textContent = message;
+            document.getElementById('progressModal').style.display = 'flex';
+        }
+
+        function hideProgress() {
+            document.getElementById('progressModal').style.display = 'none';
+        }
+
+        function updateProgress(percent, speed = '') {
+            const fill = document.getElementById('progressFill');
+            const percentEl = document.getElementById('progressPercent');
+            const speedEl = document.getElementById('progressSpeed');
+            
+            fill.style.width = `${percent}%`;
+            percentEl.textContent = `${Math.round(percent)}%`;
+            
+            if (speed) {
+                speedEl.textContent = speed;
+            }
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copiado para a área de transferência!');
+            }).catch(err => {
+                console.error('Erro ao copiar:', err);
+            });
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qrCodeContainer canvas');
+            if (!canvas) return;
+            
+            const link = document.createElement('a');
+            link.download = `qrcode-video-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function printQR() {
+            const canvas = document.querySelector('#qrCodeContainer canvas');
+            if (!canvas) return;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>QR Code do Vídeo</title>
+                    <style>
+                        body { 
+                            display: flex; 
+                            justify-content: center; 
+                            align-items: center; 
+                            height: 100vh; 
+                            margin: 0; 
+                        }
+                        img { max-width: 100%; }
+                    </style>
+                </head>
+                <body>
+                    <img src="${canvas.toDataURL('image/png')}" alt="QR Code">
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function formatDuration(seconds) {
+            if (!seconds) return '0:00';
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoShare - Compartilhe Vídeos Online</title>
+    
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --success: #10b981;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* ========== MODO COMPARTILHADO - SIMPLES E RESPONSIVO ========== */
+        body.shared-mode {
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        body.shared-mode .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        body.shared-mode .shared-video-card {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body.shared-mode .player-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        body.shared-mode .player-title h2 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        body.shared-mode .player-title p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        body.shared-mode .player-wrapper {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        body.shared-mode .video-container {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            aspect-ratio: 16/9;
+        }
+
+        body.shared-mode .player-controls {
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 15px;
+        }
+
+        body.shared-mode .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        body.shared-mode .share-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        body.shared-mode .share-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        body.shared-mode .share-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Botão Voltar Simples */
+        .back-btn-simple {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* ========== MODO NORMAL ========== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Upload Section */
+        .upload-area {
+            border: 3px dashed var(--primary);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(99, 102, 241, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .upload-area:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary-dark);
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .upload-subtext {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        /* Lista de Vídeos */
+        .video-list {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .video-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .video-item:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .video-thumb {
+            width: 70px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .video-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .video-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.95rem;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.75rem;
+            color: var(--gray);
+            flex-wrap: wrap;
+        }
+
+        /* Botão de deletar */
+        .video-actions {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        /* Player Personalizado */
+        .player-wrapper {
+            background: var(--dark);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            position: relative;
+            width: 100%;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+        }
+
+        #videoPlayer {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Controles do Player */
+        .player-controls {
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 15px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .player-wrapper:hover .player-controls {
+            opacity: 1;
+        }
+
+        .control-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            min-height: 36px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            min-width: 100px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            width: 0%;
+            position: relative;
+        }
+
+        .progress-handle {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .progress-container:hover .progress-handle {
+            opacity: 1;
+        }
+
+        .time-display {
+            color: white;
+            font-family: monospace;
+            font-size: 0.8rem;
+            min-width: 100px;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .volume-slider {
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .volume-level {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            width: 100%;
+        }
+
+        /* Compartilhamento */
+        .share-box {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .link-group {
+            margin-bottom: 20px;
+        }
+
+        .link-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .link-label i {
+            color: var(--primary);
+        }
+
+        .share-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .share-input-group {
+                flex-direction: row;
+            }
+        }
+
+        .share-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: white;
+            font-family: monospace;
+            color: var(--dark);
+            width: 100%;
+            min-width: 0;
+        }
+
+        .share-input.direct-link {
+            border-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .btn {
+                min-width: 120px;
+            }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-telegram {
+            background: #0088cc;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .social-share {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .social-share {
+                justify-content: flex-start;
+            }
+        }
+
+        /* Notificação */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            width: calc(100% - 40px);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Modal de confirmação */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .modal-text {
+            margin-bottom: 25px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Modal de Preview */
+        #previewModal .modal-content {
+            max-width: 800px;
+        }
+
+        .preview-video-container {
+            width: 100%;
+            margin-bottom: 20px;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #previewVideoPlayer {
+            width: 100%;
+            height: auto;
+            max-height: 50vh;
+            display: block;
+        }
+
+        .preview-info {
+            text-align: left;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .preview-info h4 {
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        .preview-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: var(--gray);
+            flex-wrap: wrap;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .stats {
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .stat-number {
+                font-size: 1.3rem;
+            }
+            
+            .card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+            }
+            
+            .upload-icon {
+                font-size: 40px;
+            }
+            
+            .video-container {
+                aspect-ratio: 16/9;
+            }
+            
+            .control-bar {
+                gap: 8px;
+            }
+            
+            .time-display {
+                order: 3;
+                width: 100%;
+                text-align: center;
+                margin-top: 5px;
+            }
+            
+            .social-share .btn {
+                flex: 1;
+                min-width: calc(50% - 5px);
+            }
+            
+            .video-actions {
+                position: relative;
+                right: 0;
+                top: 0;
+                transform: none;
+                margin-top: 10px;
+                justify-content: flex-end;
+            }
+            
+            .video-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .video-thumb {
+                width: 100%;
+                height: 120px;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .video-meta {
+                font-size: 0.8rem;
+            }
+            
+            .modal-content {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .modal-title {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .share-btn {
+                min-width: 120px;
+                font-size: 0.85rem;
+                padding: 8px 15px;
+            }
+            
+            body.shared-mode .player-title {
+                margin-top: 40px;
+            }
+            
+            .back-btn-simple {
+                top: 10px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-title {
+                font-size: 1.1rem;
+            }
+            
+            .upload-text {
+                font-size: 1rem;
+            }
+            
+            .social-share .btn {
+                min-width: 100%;
+            }
+            
+            .share-btn {
+                min-width: 100px;
+            }
+            
+            .preview-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Estado vazio */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 5px 8px;
+            border-radius: 4px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão Voltar (visível apenas no modo compartilhado) -->
+    <button class="back-btn-simple" id="backBtn" style="display: none;">
+        <i class="fas fa-arrow-left"></i>
+        Voltar
+    </button>
+
+    <!-- Modal de confirmação de deleção -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                Confirmar Exclusão
+            </h3>
+            <p class="modal-text" id="deleteModalText">
+                Tem certeza que deseja excluir este vídeo? Esta ação não pode ser desfeita.
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i>
+                    Excluir
+                </button>
+                <button class="btn btn-primary" id="cancelDeleteBtn">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Preview -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                <i class="fas fa-eye"></i>
+                Visualizar Vídeo
+            </h3>
+            
+            <div class="preview-video-container">
+                <video id="previewVideoPlayer" controls></video>
+            </div>
+            
+            <div class="preview-info">
+                <h4 id="previewVideoTitle"></h4>
+                <div class="preview-meta">
+                    <span id="previewVideoSize"></span>
+                    <span id="previewVideoDuration"></span>
+                    <span id="previewVideoFormat"></span>
+                </div>
+            </div>
+            
+            <p class="modal-text">
+                Verifique se este é o vídeo correto antes de salvar.
+            </p>
+            
+            <div class="modal-actions">
+                <button class="btn btn-success" id="confirmSaveBtn">
+                    <i class="fas fa-check"></i>
+                    Salvar Vídeo
+                </button>
+                <button class="btn btn-danger" id="cancelSaveBtn">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header id="mainHeader">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div>
+                        <h1>VideoShare</h1>
+                        <p>Compartilhe vídeos com qualquer pessoa, em qualquer lugar</p>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number">100GB</span>
+                        <span class="stat-label">Banda/mês</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">25GB</span>
+                        <span class="stat-label">Armazenamento</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">$0</span>
+                        <span class="stat-label">Custo mensal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-grid" id="mainGrid">
+            <!-- Coluna da Esquerda: Upload e Lista -->
+            <div id="leftColumn">
+                <!-- Card de Upload -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload de Vídeo
+                    </h2>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="upload-text">
+                            Clique para fazer upload
+                        </div>
+                        <div class="upload-subtext">
+                            Formatos: MP4, WebM, MOV, AVI
+                        </div>
+                        <div class="upload-subtext">
+                            Máximo: 100MB por vídeo
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de Vídeos -->
+                    <h2 class="card-title">
+                        <i class="fas fa-history"></i>
+                        Seus Vídeos
+                    </h2>
+                    <div class="video-list" id="videoList">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <p>Nenhum vídeo enviado ainda</p>
+                            <p class="upload-subtext">Faça upload do seu primeiro vídeo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna da Direita: Player e Compartilhamento -->
+            <div id="rightColumn">
+                <!-- Card do Player -->
+                <div class="card shared-video-card">
+                    <div class="player-title" id="sharedPlayerTitle" style="display: none;">
+                        <h2 id="sharedVideoTitleText">Vídeo Compartilhado</h2>
+                        <p id="sharedVideoDescriptionText">Assista a este vídeo compartilhado</p>
+                    </div>
+                    
+                    <h2 class="card-title" id="playerTitle">
+                        <i class="fas fa-play-circle"></i>
+                        Player
+                    </h2>
+                    
+                    <!-- Player Personalizado -->
+                    <div class="player-wrapper" id="playerWrapper" style="display: none;">
+                        <div class="video-container">
+                            <video id="videoPlayer"></video>
+                            <div class="player-controls">
+                                <div class="control-bar">
+                                    <button class="control-btn tooltip" id="playBtn" title="Play">
+                                        <i class="fas fa-play"></i>
+                                        <span class="tooltiptext">Play</span>
+                                    </button>
+                                    <button class="control-btn tooltip" id="pauseBtn" title="Pause">
+                                        <i class="fas fa-pause"></i>
+                                        <span class="tooltiptext">Pause</span>
+                                    </button>
+                                    <div class="progress-container" id="progressContainer">
+                                        <div class="progress-bar" id="progressBar">
+                                            <div class="progress-handle"></div>
+                                        </div>
+                                    </div>
+                                    <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+                                    <div class="volume-control tooltip" title="Volume">
+                                        <i class="fas fa-volume-up"></i>
+                                        <div class="volume-slider" id="volumeSlider">
+                                            <div class="volume-level" id="volumeLevel"></div>
+                                        </div>
+                                    </div>
+                                    <button class="control-btn tooltip" id="fullscreenBtn" title="Tela Cheia">
+                                        <i class="fas fa-expand"></i>
+                                        <span class="tooltiptext">Tela Cheia</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mensagem quando não há vídeo -->
+                    <div id="noVideoMessage" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <p>Nenhum vídeo selecionado</p>
+                        <p class="upload-subtext">Selecione um vídeo da lista ou faça upload</p>
+                    </div>
+                </div>
+
+                <!-- Card de Compartilhamento -->
+                <div class="card" id="shareCard">
+                    <h2 class="card-title">
+                        <i class="fas fa-share-alt"></i>
+                        Compartilhar
+                    </h2>
+                    
+                    <div class="share-box">
+                        <!-- Link de Compartilhamento da Página -->
+                        <div class="link-group">
+                            <div class="link-label">
+                                <i class="fas fa-link"></i>
+                                Link para compartilhar
+                            </div>
+                            <div class="share-input-group">
+                                <input type="text" id="shareLink" class="share-input" readonly 
+                                       placeholder="Este link será gerado após o upload...">
+                                <button class="btn btn-primary" id="copyBtn" disabled>
+                                    <i class="fas fa-copy"></i>
+                                    Copiar
+                                </button>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--gray); margin-top: 5px;">
+                                Este link abre uma página limpa apenas com o vídeo
+                            </p>
+                        </div>
+                        
+                        <!-- Link Direto do Vídeo -->
+                        <div class="link-group">
+                            <div class="link-label">
+                                <i class="fas fa-video"></i>
+                                Link direto do vídeo
+                            </div>
+                            <div class="share-input-group">
+                                <input type="text" id="directLink" class="share-input direct-link" readonly 
+                                       placeholder="https://res.cloudinary.com/.../video.mp4">
+                                <button class="btn btn-success" id="copyDirectBtn" disabled>
+                                    <i class="fas fa-copy"></i>
+                                    Copiar
+                                </button>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--gray); margin-top: 5px;">
+                                Use este link para embedar ou compartilhar diretamente o vídeo
+                            </p>
+                        </div>
+                        
+                        <!-- Botões de Compartilhamento Social -->
+                        <div class="social-share">
+                            <button class="btn btn-whatsapp" id="whatsappBtn" disabled>
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp
+                            </button>
+                            <button class="btn btn-telegram" id="telegramBtn" disabled>
+                                <i class="fab fa-telegram"></i>
+                                Telegram
+                            </button>
+                            <button class="btn btn-primary" id="facebookBtn" disabled>
+                                <i class="fab fa-facebook"></i>
+                                Facebook
+                            </button>
+                            <button class="btn btn-primary" id="twitterBtn" disabled>
+                                <i class="fab fa-twitter"></i>
+                                Twitter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de ação no modo compartilhado -->
+                <div class="share-actions" id="shareActions" style="display: none;">
+                    <button class="share-btn" id="sharedCopyBtn">
+                        <i class="fas fa-copy"></i>
+                        Copiar Link
+                    </button>
+                    <button class="share-btn whatsapp" id="sharedWhatsappBtn">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp
+                    </button>
+                    <button class="share-btn telegram" id="sharedTelegramBtn">
+                        <i class="fab fa-telegram"></i>
+                        Telegram
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // ✅✅✅ CONFIGURAÇÃO DO CLOUDINARY ✅✅✅
+        const CLOUDINARY_CLOUD_NAME = 'dxg23icni';
+        const CLOUDINARY_UPLOAD_PRESET = 'video_share_public';
+        
+        // Configurações do upload widget
+        const cloudinaryWidgetOptions = {
+            cloudName: CLOUDINARY_CLOUD_NAME,
+            uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+            sources: ['local'],
+            multiple: false,
+            maxFileSize: 104857600, // 100MB
+            resourceType: 'video',
+            clientAllowedFormats: ['mp4', 'webm', 'mov', 'avi'],
+            maxVideoDuration: 3600,
+            showAdvancedOptions: false,
+            cropping: false,
+            theme: 'minimal',
+            styles: {
+                palette: {
+                    window: "#FFFFFF",
+                    sourceBg: "#F4F4F5",
+                    windowBorder: "#6366f1",
+                    tabIcon: "#6366f1",
+                    inactiveTabIcon: "#6b7280",
+                    menuIcons: "#6366f1",
+                    link: "#6366f1",
+                    action: "#FF620C",
+                    inProgress: "#6366f1",
+                    complete: "#10b981",
+                    error: "#ef4444",
+                    textDark: "#1f2937",
+                    textLight: "#FFFFFF"
+                }
+            }
+        };
+
+        // Elementos DOM
+        const uploadArea = document.getElementById('uploadArea');
+        const previewModal = document.getElementById('previewModal');
+        const previewVideoPlayer = document.getElementById('previewVideoPlayer');
+        const previewVideoTitle = document.getElementById('previewVideoTitle');
+        const previewVideoSize = document.getElementById('previewVideoSize');
+        const previewVideoDuration = document.getElementById('previewVideoDuration');
+        const previewVideoFormat = document.getElementById('previewVideoFormat');
+        const confirmSaveBtn = document.getElementById('confirmSaveBtn');
+        const cancelSaveBtn = document.getElementById('cancelSaveBtn');
+        const videoList = document.getElementById('videoList');
+        const playerWrapper = document.getElementById('playerWrapper');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const noVideoMessage = document.getElementById('noVideoMessage');
+        const shareLink = document.getElementById('shareLink');
+        const copyBtn = document.getElementById('copyBtn');
+        const directLink = document.getElementById('directLink');
+        const copyDirectBtn = document.getElementById('copyDirectBtn');
+        const notification = document.getElementById('notification');
+        const deleteModal = document.getElementById('deleteModal');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const deleteModalText = document.getElementById('deleteModalText');
+        const backBtn = document.getElementById('backBtn');
+        const shareActions = document.getElementById('shareActions');
+        const sharedPlayerTitle = document.getElementById('sharedPlayerTitle');
+        const sharedVideoTitleText = document.getElementById('sharedVideoTitleText');
+        const sharedVideoDescriptionText = document.getElementById('sharedVideoDescriptionText');
+        const sharedWhatsappBtn = document.getElementById('sharedWhatsappBtn');
+        const sharedTelegramBtn = document.getElementById('sharedTelegramBtn');
+        const sharedCopyBtn = document.getElementById('sharedCopyBtn');
+
+        // Controles do player
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeLevel = document.getElementById('volumeLevel');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+        // Botões de compartilhamento
+        const whatsappBtn = document.getElementById('whatsappBtn');
+        const telegramBtn = document.getElementById('telegramBtn');
+        const facebookBtn = document.getElementById('facebookBtn');
+        const twitterBtn = document.getElementById('twitterBtn');
+
+        // Variáveis
+        let videos = JSON.parse(localStorage.getItem('cloudinary_videos') || '[]');
+        let currentVideo = null;
+        let isPlaying = false;
+        let videoToDelete = null;
+        let pendingVideoData = null;
+
+        // ========== EVENT LISTENERS ==========
+
+        // Upload
+        uploadArea.addEventListener('click', () => {
+            cloudinary.openUploadWidget(cloudinaryWidgetOptions, 
+                (error, result) => {
+                    if (!error && result && result.event === "success") {
+                        showVideoPreview(result.info);
+                    } else if (error) {
+                        showNotification(`Erro: ${error.message}`, true);
+                    }
+                }
+            );
+        });
+
+        // Drag and Drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = 'rgba(99, 102, 241, 0.1)';
+            uploadArea.style.borderColor = 'var(--primary-dark)';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = '';
+            uploadArea.style.borderColor = '';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '';
+            uploadArea.style.borderColor = '';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('video/')) {
+                cloudinary.openUploadWidget(cloudinaryWidgetOptions, 
+                    (error, result) => {
+                        if (!error && result && result.event === "success") {
+                            showVideoPreview(result.info);
+                        }
+                    }
+                );
+            }
+        });
+
+        // Modal preview actions
+        confirmSaveBtn.addEventListener('click', () => {
+            if (pendingVideoData) {
+                saveVideo(pendingVideoData);
+                previewModal.style.display = 'none';
+            }
+        });
+
+        cancelSaveBtn.addEventListener('click', () => {
+            previewModal.style.display = 'none';
+            pendingVideoData = null;
+            showNotification('Upload cancelado');
+        });
+
+        // Fechar modais clicando fora
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                deleteModal.style.display = 'none';
+                videoToDelete = null;
+            }
+        });
+
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                previewModal.style.display = 'none';
+                pendingVideoData = null;
+            }
+        });
+
+        // Controles do player
+        playBtn.addEventListener('click', () => {
+            videoPlayer.play();
+            isPlaying = true;
+            updatePlayPauseButtons();
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            videoPlayer.pause();
+            isPlaying = false;
+            updatePlayPauseButtons();
+        });
+
+        videoPlayer.addEventListener('play', () => {
+            isPlaying = true;
+            updatePlayPauseButtons();
+        });
+
+        videoPlayer.addEventListener('pause', () => {
+            isPlaying = false;
+            updatePlayPauseButtons();
+        });
+
+        // Progress bar
+        progressContainer.addEventListener('click', (e) => {
+            const rect = progressContainer.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            videoPlayer.currentTime = percent * videoPlayer.duration;
+        });
+
+        // Volume control
+        volumeSlider.addEventListener('click', (e) => {
+            const rect = volumeSlider.getBoundingClientRect();
+            const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+            videoPlayer.volume = percent;
+            volumeLevel.style.width = `${percent * 100}%`;
+        });
+
+        // Fullscreen
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                playerWrapper.requestFullscreen().catch(err => {
+                    console.log('Erro ao entrar em tela cheia:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        // Copy link
+        copyBtn.addEventListener('click', () => {
+            shareLink.select();
+            document.execCommand('copy');
+            showNotification('✅ Link de compartilhamento copiado!');
+        });
+
+        // Copy direct link
+        copyDirectBtn.addEventListener('click', () => {
+            directLink.select();
+            document.execCommand('copy');
+            showNotification('✅ Link direto do vídeo copiado!');
+        });
+
+        // Social sharing
+        whatsappBtn.addEventListener('click', () => {
+            const text = `🎬 Assista este vídeo: ${shareLink.value}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        });
+
+        telegramBtn.addEventListener('click', () => {
+            const text = `🎬 Assista este vídeo: ${shareLink.value}`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(shareLink.value)}&text=${encodeURIComponent('🎬 Assista:')}`, '_blank');
+        });
+
+        facebookBtn.addEventListener('click', () => {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareLink.value)}`, '_blank');
+        });
+
+        twitterBtn.addEventListener('click', () => {
+            const text = `🎬 Assista este vídeo: ${shareLink.value}`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+        });
+
+        // Modal de deleção
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (videoToDelete) {
+                deleteVideo(videoToDelete);
+                deleteModal.style.display = 'none';
+            }
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteModal.style.display = 'none';
+            videoToDelete = null;
+        });
+
+        // Botão voltar
+        backBtn.addEventListener('click', () => {
+            window.location.href = window.location.origin + window.location.pathname;
+        });
+
+        // Compartilhamento no modo compartilhado
+        sharedCopyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showNotification('✅ Link copiado para a área de transferência!');
+            });
+        });
+
+        sharedWhatsappBtn.addEventListener('click', () => {
+            const text = `🎬 Assista este vídeo: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        });
+
+        sharedTelegramBtn.addEventListener('click', () => {
+            const text = `🎬 Assista este vídeo: ${window.location.href}`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('🎬 Assista:')}`, '_blank');
+        });
+
+        // ========== FUNÇÕES PRINCIPAIS ==========
+
+        function showVideoPreview(uploadInfo) {
+            console.log('Mostrando preview do vídeo:', uploadInfo);
+            
+            // Armazenar dados temporariamente
+            pendingVideoData = {
+                id: Date.now(),
+                publicId: uploadInfo.public_id,
+                url: uploadInfo.secure_url,
+                format: uploadInfo.format,
+                bytes: uploadInfo.bytes,
+                duration: uploadInfo.duration || 0,
+                originalName: uploadInfo.original_filename,
+                uploadedAt: new Date().toISOString(),
+                title: uploadInfo.original_filename.replace(/\.[^/.]+$/, ""),
+                shareId: generateShareId(),
+                optimizedUrl: uploadInfo.secure_url.replace('/upload/', '/upload/q_auto,f_auto/')
+            };
+
+            // Mostrar modal de preview
+            previewModal.style.display = 'flex';
+            
+            // Configurar player de preview
+            previewVideoPlayer.src = pendingVideoData.url;
+            previewVideoTitle.textContent = pendingVideoData.title;
+            previewVideoSize.textContent = `Tamanho: ${formatFileSize(pendingVideoData.bytes)}`;
+            previewVideoDuration.textContent = `Duração: ${formatDuration(pendingVideoData.duration)}`;
+            previewVideoFormat.textContent = `Formato: ${pendingVideoData.format.toUpperCase()}`;
+            
+            // Iniciar reprodução
+            previewVideoPlayer.load();
+            previewVideoPlayer.play().catch(e => {
+                console.log('Auto-play bloqueado pelo navegador');
+            });
+            
+            showNotification('✅ Upload concluído! Verifique o vídeo antes de salvar.');
+        }
+
+        function saveVideo(videoData) {
+            console.log('Salvando vídeo:', videoData);
+            
+            // Adicionar à lista local
+            videos.unshift(videoData);
+            localStorage.setItem('cloudinary_videos', JSON.stringify(videos));
+            
+            // Atualizar UI
+            updateVideoList();
+            playVideo(videoData.optimizedUrl || videoData.url, videoData.title);
+            generateShareLinks(videoData);
+            
+            // Notificação
+            showNotification('✅ Vídeo salvo com sucesso! Links gerados abaixo.');
+        }
+
+        function updateVideoList() {
+            console.log('Atualizando lista de vídeos, total:', videos.length);
+            
+            if (videos.length === 0) {
+                videoList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <p>Nenhum vídeo enviado ainda</p>
+                        <p class="upload-subtext">Faça upload do seu primeiro vídeo</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            videos.forEach(video => {
+                html += `
+                    <div class="video-item" data-public-id="${video.publicId}" data-url="${video.url}" data-title="${video.title}">
+                        <div class="video-thumb">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-info">
+                            <div class="video-name">${video.title}</div>
+                            <div class="video-meta">
+                                <span>${formatDuration(video.duration)}</span>
+                                <span>${formatFileSize(video.bytes)}</span>
+                                <span>${new Date(video.uploadedAt).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <button class="delete-btn tooltip delete-video-btn" data-public-id="${video.publicId}" title="Excluir vídeo">
+                                <i class="fas fa-trash"></i>
+                                <span class="tooltiptext">Excluir vídeo</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            videoList.innerHTML = html;
+            
+            // Adicionar event listeners aos itens
+            document.querySelectorAll('.video-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    // Não ativar se clicou no botão de deletar
+                    if (!e.target.closest('.delete-video-btn')) {
+                        const publicId = item.getAttribute('data-public-id');
+                        const url = item.getAttribute('data-url');
+                        const title = item.getAttribute('data-title');
+                        
+                        const video = videos.find(v => v.publicId === publicId);
+                        
+                        if (video) {
+                            playVideo(video.optimizedUrl || video.url, video.title);
+                            generateShareLinks(video);
+                        } else {
+                            playVideo(url, title);
+                            generateShareLinks({
+                                url: url,
+                                title: title,
+                                publicId: publicId
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Adicionar event listeners aos botões de deletar
+            document.querySelectorAll('.delete-video-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const publicId = btn.getAttribute('data-public-id');
+                    const video = videos.find(v => v.publicId === publicId);
+                    
+                    if (video) {
+                        showDeleteModal(video);
+                    }
+                });
+            });
+        }
+
+        function showDeleteModal(video) {
+            videoToDelete = video;
+            deleteModalText.textContent = `Tem certeza que deseja excluir o vídeo "${video.title}"? Esta ação não pode ser desfeita e o vídeo será removido permanentemente.`;
+            deleteModal.style.display = 'flex';
+        }
+
+        async function deleteVideo(video) {
+            try {
+                showNotification('🗑️ Excluindo vídeo...');
+                
+                // Remover localmente
+                videos = videos.filter(v => v.publicId !== video.publicId);
+                localStorage.setItem('cloudinary_videos', JSON.stringify(videos));
+                
+                // Se o vídeo atual foi deletado, limpar player
+                if (currentVideo && currentVideo.publicId === video.publicId) {
+                    videoPlayer.src = '';
+                    playerWrapper.style.display = 'none';
+                    noVideoMessage.style.display = 'block';
+                    currentVideo = null;
+                    
+                    // Desativar botões de compartilhamento
+                    copyBtn.disabled = true;
+                    copyDirectBtn.disabled = true;
+                    whatsappBtn.disabled = true;
+                    telegramBtn.disabled = true;
+                    facebookBtn.disabled = true;
+                    twitterBtn.disabled = true;
+                    
+                    shareLink.value = '';
+                    directLink.value = '';
+                }
+                
+                // Atualizar lista
+                updateVideoList();
+                
+                showNotification('✅ Vídeo excluído com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao excluir vídeo:', error);
+                showNotification('❌ Erro ao excluir vídeo. Tente novamente.', true);
+            }
+        }
+
+        function playVideo(url, title) {
+            console.log('Reproduzindo vídeo:', { url, title });
+            
+            // Buscar vídeo na lista
+            const video = videos.find(v => v.url === url || v.optimizedUrl === url);
+            const playUrl = video && video.optimizedUrl ? video.optimizedUrl : url;
+            
+            videoPlayer.src = playUrl;
+            playerWrapper.style.display = 'block';
+            noVideoMessage.style.display = 'none';
+            
+            // Atualizar título
+            document.querySelector('#playerTitle').innerHTML = `
+                <i class="fas fa-play-circle"></i>
+                ${title}
+            `;
+            
+            // Armazenar vídeo atual
+            currentVideo = video || {
+                url: url,
+                title: title,
+                publicId: null
+            };
+            
+            // Resetar controles
+            videoPlayer.load();
+            updatePlayPauseButtons();
+        }
+
+        function generateShareLinks(video) {
+            console.log('Gerando links para o vídeo:', video);
+            
+            if (!video || !video.url) {
+                console.error('Vídeo inválido para gerar links');
+                return;
+            }
+            
+            // Gerar link para visualização limpa
+            const cleanLink = generateCleanLink(video);
+            
+            // Link direto do Cloudinary
+            const directVideoLink = video.url;
+            
+            console.log('Link limpo:', cleanLink);
+            console.log('Link direto:', directVideoLink);
+            
+            // Atualizar campos
+            shareLink.value = cleanLink;
+            directLink.value = directVideoLink;
+            
+            // Ativar botões
+            copyBtn.disabled = false;
+            copyDirectBtn.disabled = false;
+            whatsappBtn.disabled = false;
+            telegramBtn.disabled = false;
+            facebookBtn.disabled = false;
+            twitterBtn.disabled = false;
+            
+            showNotification('✅ Links de compartilhamento gerados!');
+        }
+
+        function generateCleanLink(video) {
+            const encodedUrl = encodeURIComponent(video.url);
+            const encodedTitle = encodeURIComponent(video.title);
+            const baseUrl = window.location.origin + window.location.pathname;
+            return `${baseUrl}?clean=true&url=${encodedUrl}&title=${encodedTitle}`;
+        }
+
+        // ========== MODO COMPARTILHADO (PÁGINA LIMPA) ==========
+
+        function enableCleanViewMode(videoUrl, videoTitle) {
+            console.log('Ativando modo de visualização limpa');
+            
+            // Adicionar classe ao body
+            document.body.classList.add('shared-mode');
+            
+            // Esconder elementos do modo normal
+            document.getElementById('mainHeader').style.display = 'none';
+            document.getElementById('leftColumn').style.display = 'none';
+            document.getElementById('shareCard').style.display = 'none';
+            document.querySelector('#playerTitle').style.display = 'none';
+            
+            // Mostrar elementos do modo compartilhado
+            backBtn.style.display = 'flex';
+            sharedPlayerTitle.style.display = 'block';
+            shareActions.style.display = 'flex';
+            
+            // Configurar título
+            sharedVideoTitleText.textContent = videoTitle;
+            sharedVideoDescriptionText.textContent = 'Vídeo compartilhado com você';
+            
+            // Ajustar layout
+            document.querySelector('.main-grid').style.gridTemplateColumns = '1fr';
+            document.querySelector('.main-grid').style.maxWidth = '100%';
+            
+            // Reproduzir vídeo
+            playVideo(videoUrl, videoTitle);
+            
+            // Auto-play
+            setTimeout(() => {
+                videoPlayer.play().catch(e => {
+                    console.log('Auto-play bloqueado pelo navegador:', e);
+                    showNotification('Clique no botão play para reproduzir o vídeo');
+                });
+            }, 500);
+        }
+
+        function updatePlayPauseButtons() {
+            if (isPlaying) {
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            } else {
+                playBtn.style.display = 'flex';
+                pauseBtn.style.display = 'none';
+            }
+        }
+
+        function updateTimeDisplay() {
+            const formatTime = (time) => {
+                const mins = Math.floor(time / 60);
+                const secs = Math.floor(time % 60);
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            };
+            
+            if (videoPlayer.duration) {
+                timeDisplay.textContent = `${formatTime(videoPlayer.currentTime)} / ${formatTime(videoPlayer.duration)}`;
+            }
+        }
+
+        // ========== UTILITÁRIOS ==========
+
+        function generateShareId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        function formatDuration(seconds) {
+            if (!seconds || seconds === 0) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function formatFileSize(bytes) {
+            if (!bytes) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
+            else return (bytes / 1073741824).toFixed(1) + ' GB';
+        }
+
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.className = 'notification' + (isError ? ' error' : '');
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // ========== INICIALIZAÇÃO ==========
+
+        window.addEventListener('load', () => {
+            console.log('Vídeos carregados do localStorage:', videos);
+            
+            // Verificar se é modo clean (página limpa)
+            const urlParams = new URLSearchParams(window.location.search);
+            const isCleanView = urlParams.get('clean') === 'true';
+            const videoUrl = urlParams.get('url');
+            const videoTitle = urlParams.get('title');
+            
+            if (isCleanView && videoUrl) {
+                const decodedTitle = decodeURIComponent(videoTitle || 'Vídeo Compartilhado');
+                const decodedUrl = decodeURIComponent(videoUrl);
+                
+                console.log('Modo de visualização limpa ativado:', { decodedTitle, decodedUrl });
+                enableCleanViewMode(decodedUrl, decodedTitle);
+                
+            } else {
+                // Modo normal
+                updateVideoList();
+                
+                if (videos.length > 0) {
+                    const firstVideo = videos[0];
+                    playVideo(firstVideo.optimizedUrl || firstVideo.url, firstVideo.title);
+                    generateShareLinks(firstVideo);
+                } else {
+                    playerWrapper.style.display = 'none';
+                    noVideoMessage.style.display = 'block';
+                }
+            }
+            
+            // Inicializar controles do player
+            updatePlayPauseButtons();
+            
+            // Atualizar barra de progresso
+            videoPlayer.addEventListener('timeupdate', () => {
+                if (videoPlayer.duration) {
+                    const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                    progressBar.style.width = `${percent}%`;
+                    updateTimeDisplay();
+                }
+            });
+            
+            // Configurar volume inicial
+            videoPlayer.volume = 1;
+            volumeLevel.style.width = '100%';
+            
+            // Lidar com final do vídeo
+            videoPlayer.addEventListener('ended', () => {
+                isPlaying = false;
+                updatePlayPauseButtons();
+            });
+        });
+    </script>
+</body>
+</html>
