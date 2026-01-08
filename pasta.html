@@ -14,11 +14,13 @@
             --primary-dark: #4f46e5;
             --secondary: #10b981;
             --danger: #ef4444;
+            --warning: #f59e0b;
             --dark: #1f2937;
             --light: #f9fafb;
             --gray: #6b7280;
             --success: #10b981;
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
         * {
@@ -46,8 +48,8 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 25px 30px;
-            margin-bottom: 30px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -57,37 +59,37 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .logo-icon {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 24px;
+            font-size: 20px;
         }
 
         .logo h1 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--dark);
         }
 
         .logo p {
             color: var(--gray);
-            font-size: 0.9rem;
-            margin-top: 5px;
+            font-size: 0.85rem;
+            margin-top: 3px;
         }
 
         /* Botão Voltar */
@@ -95,32 +97,65 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 10px 20px;
             border-radius: 50px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-weight: 600;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
             transition: all 0.3s;
         }
 
         .back-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
         }
 
         /* Main Grid */
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 25px;
         }
 
         @media (max-width: 768px) {
             .main-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 15px 20px;
+                margin-bottom: 20px;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .back-btn {
+                width: 100%;
+                justify-content: center;
             }
         }
 
@@ -128,23 +163,22 @@
         .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 16px;
+            padding: 22px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 30px;
-            min-height: 400px;
+            margin-bottom: 25px;
         }
 
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             color: var(--dark);
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-bottom: 15px;
+            gap: 8px;
+            padding-bottom: 12px;
             border-bottom: 2px solid rgba(99, 102, 241, 0.1);
         }
 
@@ -154,26 +188,27 @@
 
         /* Formulário de Pasta */
         .folder-form {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
             color: var(--dark);
+            font-size: 0.9rem;
         }
 
         .form-input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 11px 14px;
             border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 0.95rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             background: white;
             transition: all 0.3s;
         }
@@ -185,22 +220,23 @@
         }
 
         .form-input.color-picker {
-            height: 45px;
+            height: 42px;
             cursor: pointer;
             padding: 5px;
+            width: 100%;
         }
 
         .btn {
-            padding: 12px 25px;
+            padding: 11px 22px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
+            gap: 7px;
+            font-size: 0.9rem;
             justify-content: center;
         }
 
@@ -226,7 +262,7 @@
         }
 
         .btn-warning {
-            background: #f59e0b;
+            background: var(--warning);
             color: white;
         }
 
@@ -254,40 +290,53 @@
         .folder-item {
             display: flex;
             align-items: center;
-            padding: 15px;
+            padding: 14px;
             background: var(--light);
-            border-radius: 12px;
+            border-radius: 10px;
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
-            border: 2px solid #e5e7eb;
+            border: 2px solid transparent;
             position: relative;
         }
 
         .folder-item:hover {
             background: white;
             border-color: var(--primary);
-            transform: translateX(5px);
+            transform: translateX(3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .folder-item.selected {
-            background: rgba(99, 102, 241, 0.1);
+            background: white;
             border-color: var(--primary);
             box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+            position: relative;
+        }
+
+        .folder-item.selected::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            border-radius: 5px 0 0 5px;
         }
 
         .folder-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
-            margin-right: 15px;
+            font-size: 16px;
+            margin-right: 12px;
             flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .folder-info {
@@ -297,41 +346,42 @@
 
         .folder-name {
             font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 0.95rem;
+            margin-bottom: 4px;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .folder-meta {
             display: flex;
-            gap: 15px;
-            font-size: 0.75rem;
+            gap: 12px;
+            font-size: 0.72rem;
             color: var(--gray);
             flex-wrap: wrap;
         }
 
         /* Botões de ação */
         .folder-actions {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            margin-left: 10px;
         }
 
         .action-btn {
             background: white;
             border: 1px solid #e5e7eb;
             color: var(--dark);
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 14px;
+            font-size: 13px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .action-btn:hover {
@@ -359,19 +409,40 @@
         /* Gerenciar Vídeos na Pasta */
         .videos-in-folder {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
 
+        @media (max-width: 1024px) {
+            .videos-in-folder {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .videos-in-folder {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .videos-in-folder {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+        }
+
         .video-in-folder {
-            background: var(--light);
+            background: white;
             border-radius: 10px;
             overflow: hidden;
             border: 1px solid #e5e7eb;
             transition: all 0.3s;
             position: relative;
             cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         .video-in-folder:hover {
@@ -381,13 +452,32 @@
 
         .video-thumb-small {
             width: 100%;
-            height: 120px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 110px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .video-thumb-small::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.2));
+        }
+
+        .video-thumb-small i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             color: white;
-            font-size: 30px;
+            font-size: 28px;
+            z-index: 2;
+            opacity: 0.9;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .video-info-small {
@@ -396,7 +486,7 @@
 
         .video-name-small {
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-bottom: 5px;
             white-space: nowrap;
             overflow: hidden;
@@ -406,15 +496,15 @@
         .video-meta-small {
             display: flex;
             justify-content: space-between;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--gray);
         }
 
         .add-video-btn {
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(99, 102, 241, 0.05);
             border: 2px dashed var(--primary);
             border-radius: 10px;
-            height: 160px;
+            height: 150px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -425,13 +515,18 @@
         }
 
         .add-video-btn:hover {
-            background: rgba(99, 102, 241, 0.2);
+            background: rgba(99, 102, 241, 0.1);
             transform: scale(1.02);
         }
 
         .add-video-btn i {
-            font-size: 30px;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .add-video-btn span {
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         /* Modal */
@@ -442,48 +537,67 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 2000;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
             backdrop-filter: blur(5px);
         }
 
         .modal-content {
             background: white;
-            padding: 30px;
-            border-radius: 20px;
+            padding: 25px;
+            border-radius: 16px;
             max-width: 800px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-lg);
             max-height: 90vh;
             overflow-y: auto;
         }
 
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 20px;
+                max-height: 95vh;
+            }
+        }
+
         .modal-title {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
             color: var(--dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .modal-text {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             color: var(--gray);
             line-height: 1.5;
+            font-size: 0.95rem;
         }
 
         .modal-actions {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 15px;
             flex-wrap: wrap;
+        }
+
+        @media (max-width: 480px) {
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .modal-actions .btn {
+                width: 100%;
+            }
         }
 
         /* Notificação */
@@ -493,16 +607,27 @@
             right: 20px;
             background: linear-gradient(135deg, var(--success), var(--secondary));
             color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
+            padding: 14px 22px;
+            border-radius: 8px;
             display: none;
             z-index: 1000;
             box-shadow: var(--shadow);
             animation: slideIn 0.3s ease;
+            max-width: 350px;
+            font-size: 0.9rem;
         }
 
         .notification.error {
             background: linear-gradient(135deg, var(--danger), #dc2626);
+        }
+
+        @media (max-width: 768px) {
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
         }
 
         @keyframes slideIn {
@@ -525,72 +650,83 @@
         /* Estado vazio */
         .empty-state {
             text-align: center;
-            padding: 50px 20px;
+            padding: 40px 15px;
             color: var(--gray);
         }
 
         .empty-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
+            font-size: 50px;
+            margin-bottom: 15px;
             opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
         }
 
         /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         /* Tags */
         .tags-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 8px;
         }
 
         .tag {
             background: rgba(99, 102, 241, 0.1);
             color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .tag i {
-            font-size: 10px;
+            font-size: 9px;
         }
 
         /* Lista de vídeos disponíveis no modal */
         .available-videos-container {
-            max-height: 400px;
+            max-height: 350px;
             overflow-y: auto;
-            margin: 20px 0;
+            margin: 15px 0;
             border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 8px;
+            padding: 8px;
             background: var(--light);
+        }
+
+        @media (max-width: 768px) {
+            .available-videos-container {
+                max-height: 300px;
+            }
         }
 
         .video-select-item {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 9px;
             background: white;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             border: 1px solid #e5e7eb;
             transition: all 0.2s;
             cursor: pointer;
@@ -607,28 +743,34 @@
         }
 
         .video-select-checkbox {
-            margin-right: 15px;
-            width: 20px;
-            height: 20px;
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .video-select-info {
             flex: 1;
             text-align: left;
+            min-width: 0;
         }
 
         .video-select-name {
             font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 3px;
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .video-select-meta {
             display: flex;
-            gap: 15px;
-            font-size: 0.75rem;
+            gap: 12px;
+            font-size: 0.7rem;
             color: var(--gray);
+            flex-wrap: wrap;
         }
 
         /* Controles de seleção */
@@ -636,13 +778,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .selection-info {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--gray);
         }
 
@@ -655,20 +797,21 @@
             position: absolute;
             top: 5px;
             right: 5px;
-            background: rgba(239, 68, 68, 0.9);
+            background: rgba(239, 68, 68, 0.95);
             color: white;
             border: none;
-            width: 25px;
-            height: 25px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
             z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         .video-in-folder:hover .remove-video-btn {
@@ -682,78 +825,149 @@
 
         /* Seções de vídeos separadas */
         .video-section-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--dark);
-            margin: 15px 0 10px 0;
+            margin: 12px 0 8px 0;
             padding-bottom: 5px;
             border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .video-section-subtitle {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--gray);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-style: italic;
         }
 
-        /* Modal de visualização de vídeo */
+        /* Modal de visualização de vídeo - PLAYER PRÓPRIO */
         .video-viewer {
             width: 100%;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            margin: 20px 0;
+            margin: 15px 0;
             background: var(--dark);
+            position: relative;
         }
 
-        .video-player {
+        .custom-video-player {
             width: 100%;
             max-height: 400px;
             background: #000;
+            display: block;
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .video-viewer:hover .video-controls {
+            opacity: 1;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .control-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            width: 0%;
+        }
+
+        .time-display {
+            color: white;
+            font-size: 0.85rem;
+            min-width: 100px;
+            text-align: center;
         }
 
         .video-info-large {
             text-align: left;
-            margin: 20px 0;
-            padding: 20px;
+            margin: 15px 0;
+            padding: 15px;
             background: var(--light);
             border-radius: 10px;
         }
 
         .video-title-large {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--dark);
         }
 
         .video-meta-large {
             display: flex;
-            gap: 20px;
-            font-size: 0.85rem;
+            gap: 15px;
+            font-size: 0.8rem;
             color: var(--gray);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
         }
 
         .video-description {
-            margin-top: 10px;
-            font-size: 0.9rem;
+            margin-top: 8px;
+            font-size: 0.85rem;
             line-height: 1.5;
             color: var(--dark);
         }
 
         .link-container {
             background: var(--light);
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
-            margin: 15px 0;
+            margin: 12px 0;
             text-align: left;
         }
 
         .link-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--dark);
             display: flex;
             align-items: center;
@@ -762,30 +976,39 @@
 
         .link-input-group {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .link-input-group {
+                flex-direction: column;
+            }
         }
 
         .link-input {
             flex: 1;
-            padding: 10px;
+            padding: 9px;
             border: 1px solid #e5e7eb;
             border-radius: 5px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             background: white;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .link-btn {
-            padding: 10px 15px;
+            padding: 9px 12px;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             gap: 5px;
+            white-space: nowrap;
         }
 
         .link-btn:hover {
@@ -804,33 +1027,132 @@
         .folder-badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             background: rgba(99, 102, 241, 0.1);
             color: var(--primary);
-            padding: 2px 8px;
+            padding: 2px 6px;
             border-radius: 10px;
-            font-size: 0.7rem;
-            margin-left: 8px;
+            font-size: 0.65rem;
+            margin-left: 6px;
+            flex-shrink: 0;
         }
 
         .video-in-folder-badge {
             position: absolute;
             top: 5px;
             left: 5px;
-            background: rgba(16, 185, 129, 0.9);
+            background: rgba(16, 185, 129, 0.95);
             color: white;
-            padding: 2px 8px;
+            padding: 2px 6px;
             border-radius: 10px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         /* Separador entre seções de vídeos */
         .separator {
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            margin: 20px 0;
+            margin: 15px 0;
             opacity: 0.3;
+        }
+
+        /* Preview de vídeo com cor dinâmica */
+        .video-preview {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .video-preview-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .video-in-folder:hover .video-preview-thumb {
+            transform: scale(1.05);
+        }
+
+        .video-preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.5));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-play-btn {
+            background: rgba(255,255,255,0.9);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .video-in-folder:hover .preview-play-btn {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .status-available {
+            background: var(--success);
+        }
+
+        .status-in-folder {
+            background: var(--primary);
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Color preview circle */
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -860,36 +1182,52 @@
                 <div class="card">
                     <h2 class="card-title">
                         <i class="fas fa-plus-circle"></i>
-                        Criar Nova Pasta
+                        Criar/Editar Pasta
                     </h2>
                     
                     <form class="folder-form" id="folderForm">
                         <div class="form-group">
-                            <label class="form-label" for="folderName">Nome da Pasta</label>
+                            <label class="form-label" for="folderName">
+                                <i class="fas fa-font"></i>
+                                Nome da Pasta
+                            </label>
                             <input type="text" id="folderName" class="form-input" 
                                    placeholder="Ex: Vídeos Engraçados" required>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="folderDescription">Descrição</label>
+                            <label class="form-label" for="folderDescription">
+                                <i class="fas fa-align-left"></i>
+                                Descrição
+                            </label>
                             <textarea id="folderDescription" class="form-input" 
                                       placeholder="Descreva o tipo de vídeos desta pasta..." 
                                       rows="3"></textarea>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="folderColor">Cor da Pasta</label>
+                            <label class="form-label" for="folderColor">
+                                <i class="fas fa-palette"></i>
+                                Cor da Pasta
+                                <span class="color-preview" id="colorPreview" style="background-color: #6366f1;"></span>
+                            </label>
                             <input type="color" id="folderColor" class="form-input color-picker" 
                                    value="#6366f1" title="Escolha uma cor para a pasta">
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="folderTags">Tags (separadas por vírgula)</label>
+                            <label class="form-label" for="folderTags">
+                                <i class="fas fa-tags"></i>
+                                Tags (separadas por vírgula)
+                            </label>
                             <input type="text" id="folderTags" class="form-input" 
                                    placeholder="Ex: engraçado, humor, diversão">
+                            <div class="video-section-subtitle" style="margin-top: 5px;">
+                                Tags ajudam a organizar e encontrar pastas mais facilmente
+                            </div>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="saveFolderBtn">
                             <i class="fas fa-save"></i>
                             Salvar Pasta
                         </button>
@@ -903,6 +1241,7 @@
                     <h2 class="card-title">
                         <i class="fas fa-folder-open"></i>
                         Suas Pastas
+                        <span class="folder-badge" id="foldersCount">0</span>
                     </h2>
                     
                     <div class="folders-list" id="foldersList">
@@ -921,11 +1260,16 @@
 
         <!-- Card Expandido: Gerenciar Vídeos da Pasta Selecionada -->
         <div class="card" id="manageFolderCard" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 class="card-title" id="selectedFolderTitle" style="margin-bottom: 0;">
-                    <i class="fas fa-folder"></i>
-                    <span id="folderNameDisplay">Nome da Pasta</span>
-                </h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h2 class="card-title" id="selectedFolderTitle" style="margin-bottom: 0;">
+                        <i class="fas fa-folder"></i>
+                        <span id="folderNameDisplay">Nome da Pasta</span>
+                    </h2>
+                    <div style="font-size: 0.8rem; color: var(--gray); margin-top: 5px;">
+                        <i class="fas fa-calendar"></i> Criada em: <span id="folderCreatedAt"></span>
+                    </div>
+                </div>
                 
                 <button class="btn btn-success" id="addMultipleVideosBtn">
                     <i class="fas fa-plus-circle"></i>
@@ -934,14 +1278,19 @@
             </div>
             
             <div class="folder-meta" style="margin-bottom: 20px;">
-                <span id="folderDescDisplay"></span>
+                <div id="folderDescDisplay" style="margin-bottom: 10px;"></div>
                 <div class="tags-container" id="folderTagsDisplay"></div>
             </div>
             
-            <h3 class="card-title" style="font-size: 1.1rem;">
-                <i class="fas fa-video"></i>
-                Vídeos nesta Pasta (<span id="videoCount">0</span>)
-            </h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 class="card-title" style="font-size: 1.1rem; margin-bottom: 0;">
+                    <i class="fas fa-video"></i>
+                    Vídeos nesta Pasta
+                </h3>
+                <div class="folder-badge" style="background: var(--primary); color: white;">
+                    <span id="videoCount">0</span> vídeo(s)
+                </div>
+            </div>
             
             <div class="videos-in-folder" id="videosInFolder">
                 <!-- Vídeos serão carregados aqui -->
@@ -985,7 +1334,7 @@
             <h3 class="modal-title">
                 <i class="fas fa-video"></i>
                 Adicionar Vídeos à Pasta
-                <span style="font-size: 0.9rem; color: var(--gray); margin-left: 10px;">
+                <span style="font-size: 0.85rem; color: var(--gray); margin-left: 8px;">
                     (<span id="selectedVideosCount">0</span> selecionados)
                 </span>
             </h3>
@@ -995,7 +1344,7 @@
                     Selecione os vídeos que deseja adicionar à pasta
                     <span id="totalAvailableVideos">0</span> vídeos disponíveis
                 </div>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="btn btn-warning" id="selectAllVideosBtn">
                         <i class="fas fa-check-square"></i>
                         Selecionar Todos
@@ -1031,7 +1380,7 @@
         </div>
     </div>
 
-    <!-- Modal de Visualização de Vídeo -->
+    <!-- Modal de Visualização de Vídeo - PLAYER PRÓPRIO -->
     <div class="modal" id="viewVideoModal">
         <div class="modal-content" style="max-width: 900px;">
             <h3 class="modal-title">
@@ -1040,9 +1389,26 @@
             </h3>
             
             <div class="video-viewer">
-                <video class="video-player" id="videoPlayer" controls>
+                <video class="custom-video-player" id="videoPlayer">
                     Seu navegador não suporta a tag de vídeo.
                 </video>
+                <div class="video-controls">
+                    <button class="control-btn" id="playPauseBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                    </div>
+                    <button class="control-btn" id="fullscreenBtn">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button class="control-btn" id="volumeBtn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
             </div>
             
             <div class="video-info-large">
@@ -1078,7 +1444,7 @@
                 <div class="link-input-group">
                     <input type="text" class="link-input" id="directLinkInput" 
                            readonly value="">
-                    <a class="link-btn" id="downloadVideoBtn" target="_blank" download>
+                    <a class="link-btn" id="downloadVideoBtn" target="_blank" download style="text-decoration: none;">
                         <i class="fas fa-download"></i>
                         Baixar
                     </a>
@@ -1109,12 +1475,14 @@
         const folderDescriptionInput = document.getElementById('folderDescription');
         const folderColorInput = document.getElementById('folderColor');
         const folderTagsInput = document.getElementById('folderTags');
+        const colorPreview = document.getElementById('colorPreview');
         const foldersList = document.getElementById('foldersList');
         const manageFolderCard = document.getElementById('manageFolderCard');
         const selectedFolderTitle = document.getElementById('selectedFolderTitle');
         const folderNameDisplay = document.getElementById('folderNameDisplay');
         const folderDescDisplay = document.getElementById('folderDescDisplay');
         const folderTagsDisplay = document.getElementById('folderTagsDisplay');
+        const folderCreatedAt = document.getElementById('folderCreatedAt');
         const videosInFolder = document.getElementById('videosInFolder');
         const addMultipleVideosBtn = document.getElementById('addMultipleVideosBtn');
         const deleteModal = document.getElementById('deleteModal');
@@ -1131,9 +1499,11 @@
         const selectedCount = document.getElementById('selectedCount');
         const totalAvailableVideos = document.getElementById('totalAvailableVideos');
         const videoCount = document.getElementById('videoCount');
+        const foldersCount = document.getElementById('foldersCount');
+        const saveFolderBtn = document.getElementById('saveFolderBtn');
         const notification = document.getElementById('notification');
         
-        // Elementos do modal de visualização de vídeo
+        // Elementos do player de vídeo próprio
         const viewVideoModal = document.getElementById('viewVideoModal');
         const videoPlayer = document.getElementById('videoPlayer');
         const viewVideoTitle = document.getElementById('viewVideoTitle');
@@ -1148,6 +1518,13 @@
         const copyDirectLinkBtn = document.getElementById('copyDirectLinkBtn');
         const downloadVideoBtn = document.getElementById('downloadVideoBtn');
         const closeViewVideoModalBtn = document.getElementById('closeViewVideoModalBtn');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const currentTime = document.getElementById('currentTime');
+        const duration = document.getElementById('duration');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const volumeBtn = document.getElementById('volumeBtn');
 
         // Variáveis
         let folders = [];
@@ -1156,6 +1533,16 @@
         let folderToDelete = null;
         let selectedVideoIds = new Set();
         let currentViewingVideo = null;
+        let isPlaying = false;
+        let isFullscreen = false;
+
+        // Atualizar preview da cor
+        folderColorInput.addEventListener('input', function() {
+            colorPreview.style.backgroundColor = this.value;
+        });
+
+        // Inicializar preview da cor
+        colorPreview.style.backgroundColor = folderColorInput.value;
 
         // Event Listeners
         backToMain.addEventListener('click', () => {
@@ -1188,14 +1575,43 @@
         selectAllVideosBtn.addEventListener('click', selectAllVideos);
         deselectAllVideosBtn.addEventListener('click', deselectAllVideos);
 
-        // Event Listeners para o modal de visualização de vídeo
+        // Event Listeners para o player de vídeo próprio
         copyShareLinkBtn.addEventListener('click', copyShareLink);
         copyDirectLinkBtn.addEventListener('click', copyDirectLink);
         closeViewVideoModalBtn.addEventListener('click', () => {
             viewVideoModal.style.display = 'none';
             videoPlayer.pause();
             currentViewingVideo = null;
+            isPlaying = false;
+            updatePlayPauseButton();
         });
+
+        // Controles do player
+        playPauseBtn.addEventListener('click', togglePlayPause);
+        
+        videoPlayer.addEventListener('play', () => {
+            isPlaying = true;
+            updatePlayPauseButton();
+        });
+        
+        videoPlayer.addEventListener('pause', () => {
+            isPlaying = false;
+            updatePlayPauseButton();
+        });
+        
+        videoPlayer.addEventListener('timeupdate', updateProgress);
+        videoPlayer.addEventListener('loadedmetadata', () => {
+            duration.textContent = formatTime(videoPlayer.duration);
+        });
+        
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            videoPlayer.currentTime = pos * videoPlayer.duration;
+        });
+        
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        volumeBtn.addEventListener('click', toggleMute);
 
         // Fechar modais clicando fora
         deleteModal.addEventListener('click', (e) => {
@@ -1217,6 +1633,8 @@
                 viewVideoModal.style.display = 'none';
                 videoPlayer.pause();
                 currentViewingVideo = null;
+                isPlaying = false;
+                updatePlayPauseButton();
             }
         });
 
@@ -1227,7 +1645,6 @@
             if (openBtn) {
                 e.stopPropagation();
                 const folderId = openBtn.getAttribute('data-folder-id');
-                console.log('Abrir pasta clicado:', folderId);
                 selectFolder(folderId);
                 return;
             }
@@ -1237,7 +1654,6 @@
             if (editBtn) {
                 e.stopPropagation();
                 const folderId = editBtn.getAttribute('data-folder-id');
-                console.log('Editar pasta clicado:', folderId);
                 editFolder(folderId);
                 return;
             }
@@ -1247,7 +1663,6 @@
             if (deleteBtn) {
                 e.stopPropagation();
                 const folderId = deleteBtn.getAttribute('data-folder-id');
-                console.log('Deletar pasta clicado:', folderId);
                 showDeleteModal(folderId);
                 return;
             }
@@ -1258,11 +1673,74 @@
                 // Se clicou na pasta mas não em um botão de ação
                 if (!e.target.closest('.folder-actions')) {
                     const folderId = folderItem.getAttribute('data-folder-id');
-                    console.log('Pasta clicada:', folderId);
                     selectFolder(folderId);
                 }
             }
         });
+
+        // Funções do player de vídeo
+        function togglePlayPause() {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+            } else {
+                videoPlayer.pause();
+            }
+        }
+
+        function updatePlayPauseButton() {
+            if (isPlaying) {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        }
+
+        function updateProgress() {
+            const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+            progressFill.style.width = `${percent}%`;
+            currentTime.textContent = formatTime(videoPlayer.currentTime);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function toggleFullscreen() {
+            const videoContainer = document.querySelector('.video-viewer');
+            
+            if (!isFullscreen) {
+                if (videoContainer.requestFullscreen) {
+                    videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    videoContainer.webkitRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    videoContainer.msRequestFullscreen();
+                }
+                isFullscreen = true;
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                isFullscreen = false;
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        }
+
+        function toggleMute() {
+            videoPlayer.muted = !videoPlayer.muted;
+            if (videoPlayer.muted) {
+                volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+        }
 
         // Função para visualizar vídeo
         function viewVideo(videoId) {
@@ -1289,13 +1767,16 @@
             
             directLinkInput.value = video.url;
             downloadVideoBtn.href = video.url;
-            downloadVideoBtn.download = `${video.title}.mp4`;
+            downloadVideoBtn.download = `${video.title.replace(/[^a-z0-9]/gi, '_')}.mp4`;
             
             // Mostrar o modal
             viewVideoModal.style.display = 'flex';
             
             // Reproduzir o vídeo automaticamente
-            videoPlayer.play().catch(e => {
+            videoPlayer.play().then(() => {
+                isPlaying = true;
+                updatePlayPauseButton();
+            }).catch(e => {
                 console.log('Reprodução automática bloqueada:', e);
             });
         }
@@ -1326,59 +1807,85 @@
             }, 2000);
         }
 
-        // Funções
+        // Gerar cor baseada no nome do vídeo (para previews)
+        function generateColorFromString(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            
+            const colors = [
+                '#667eea', '#764ba2', '#f093fb', '#f5576c',
+                '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
+                '#fa709a', '#fee140', '#30cfd0', '#330867'
+            ];
+            
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        // Funções principais
         function saveFolder() {
-            const folderData = {
-                id: currentFolder ? currentFolder.id : 'folder_' + Date.now(),
-                name: folderNameInput.value.trim(),
-                description: folderDescriptionInput.value.trim(),
-                color: folderColorInput.value,
-                tags: folderTagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag),
-                createdAt: currentFolder ? currentFolder.createdAt : new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                videoIds: currentFolder ? currentFolder.videoIds : []
-            };
+            saveFolderBtn.innerHTML = '<div class="loading"></div>';
+            saveFolderBtn.disabled = true;
+            
+            setTimeout(() => {
+                const folderData = {
+                    id: currentFolder ? currentFolder.id : 'folder_' + Date.now(),
+                    name: folderNameInput.value.trim(),
+                    description: folderDescriptionInput.value.trim(),
+                    color: folderColorInput.value,
+                    tags: folderTagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                    createdAt: currentFolder ? currentFolder.createdAt : new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    videoIds: currentFolder ? currentFolder.videoIds : []
+                };
 
-            // Verificar se já existe uma pasta com esse nome
-            if (!currentFolder) {
-                const existingFolder = folders.find(f => f.name.toLowerCase() === folderData.name.toLowerCase());
-                if (existingFolder) {
-                    showNotification('❌ Já existe uma pasta com esse nome!', true);
-                    return;
+                // Verificar se já existe uma pasta com esse nome
+                if (!currentFolder) {
+                    const existingFolder = folders.find(f => f.name.toLowerCase() === folderData.name.toLowerCase());
+                    if (existingFolder) {
+                        showNotification('❌ Já existe uma pasta com esse nome!', true);
+                        saveFolderBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Pasta';
+                        saveFolderBtn.disabled = false;
+                        return;
+                    }
                 }
-            }
 
-            if (currentFolder) {
-                // Atualizar pasta existente
-                const index = folders.findIndex(f => f.id === currentFolder.id);
-                if (index !== -1) {
-                    folders[index] = folderData;
+                if (currentFolder) {
+                    // Atualizar pasta existente
+                    const index = folders.findIndex(f => f.id === currentFolder.id);
+                    if (index !== -1) {
+                        folders[index] = folderData;
+                    }
+                } else {
+                    // Adicionar nova pasta
+                    folders.unshift(folderData);
                 }
-            } else {
-                // Adicionar nova pasta
-                folders.unshift(folderData);
-            }
 
-            // Salvar no localStorage
-            localStorage.setItem('video_folders', JSON.stringify(folders));
-            
-            // Atualizar a interface
-            updateFoldersList();
-            
-            // Resetar formulário
-            resetFolderForm();
-            
-            // Mostrar notificação
-            showNotification(currentFolder ? '✅ Pasta atualizada com sucesso!' : '✅ Pasta criada com sucesso!');
-            
-            // Se era uma edição, voltar para a visualização
-            if (currentFolder) {
-                selectFolder(folderData.id);
-            }
+                // Salvar no localStorage
+                localStorage.setItem('video_folders', JSON.stringify(folders));
+                
+                // Atualizar a interface
+                updateFoldersList();
+                
+                // Resetar formulário
+                resetFolderForm();
+                
+                // Mostrar notificação
+                showNotification(currentFolder ? '✅ Pasta atualizada com sucesso!' : '✅ Pasta criada com sucesso!');
+                
+                // Se era uma edição, voltar para a visualização
+                if (currentFolder) {
+                    selectFolder(folderData.id);
+                }
+                
+                saveFolderBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Pasta';
+                saveFolderBtn.disabled = false;
+            }, 500);
         }
 
         function updateFoldersList() {
-            console.log('Atualizando lista de pastas...', folders);
+            foldersCount.textContent = folders.length;
             
             if (folders.length === 0) {
                 foldersList.innerHTML = `
@@ -1397,6 +1904,8 @@
             folders.forEach(folder => {
                 const videoCount = folder.videoIds ? folder.videoIds.length : 0;
                 const isSelected = currentFolder && currentFolder.id === folder.id;
+                const createdDate = new Date(folder.createdAt);
+                const formattedDate = createdDate.toLocaleDateString('pt-BR');
                 
                 html += `
                     <div class="folder-item ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}">
@@ -1404,16 +1913,18 @@
                             <i class="fas fa-folder${videoCount > 0 ? '-open' : ''}"></i>
                         </div>
                         <div class="folder-info">
-                            <div class="folder-name">${folder.name}</div>
+                            <div class="folder-name">
+                                ${folder.name}
+                                ${videoCount > 0 ? `<span class="folder-badge" style="background-color: ${folder.color}20; color: ${folder.color}; font-size: 0.7rem;">${videoCount} vídeo${videoCount !== 1 ? 's' : ''}</span>` : ''}
+                            </div>
                             <div class="folder-meta">
-                                <span>${videoCount} vídeo${videoCount !== 1 ? 's' : ''}</span>
-                                <span>${new Date(folder.createdAt).toLocaleDateString('pt-BR')}</span>
-                                ${folder.description ? `<span>${folder.description.substring(0, 50)}${folder.description.length > 50 ? '...' : ''}</span>` : ''}
+                                <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                                ${folder.description ? `<span title="${folder.description}"><i class="fas fa-align-left"></i> ${folder.description.substring(0, 30)}${folder.description.length > 30 ? '...' : ''}</span>` : ''}
                             </div>
                             ${folder.tags && folder.tags.length > 0 ? `
                                 <div class="tags-container">
-                                    ${folder.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                                    ${folder.tags.length > 3 ? `<span class="tag">+${folder.tags.length - 3}</span>` : ''}
+                                    ${folder.tags.slice(0, 2).map(tag => `<span class="tag" style="background-color: ${folder.color}15; color: ${folder.color};">${tag}</span>`).join('')}
+                                    ${folder.tags.length > 2 ? `<span class="tag" style="background-color: ${folder.color}15; color: ${folder.color};">+${folder.tags.length - 2}</span>` : ''}
                                 </div>
                             ` : ''}
                         </div>
@@ -1436,12 +1947,8 @@
         }
 
         function selectFolder(folderId) {
-            console.log('Selecionando pasta ID:', folderId);
             const folder = folders.find(f => f.id === folderId);
-            console.log('Pasta encontrada:', folder);
-            
             if (!folder) {
-                console.error('Pasta não encontrada!');
                 showNotification('❌ Pasta não encontrada!', true);
                 return;
             }
@@ -1467,7 +1974,14 @@
             // Atualizar a interface
             folderNameDisplay.textContent = folder.name;
             selectedFolderTitle.querySelector('.fa-folder').parentElement.style.backgroundColor = folder.color;
-            folderDescDisplay.textContent = folder.description || 'Sem descrição';
+            
+            if (folder.description) {
+                folderDescDisplay.innerHTML = `<i class="fas fa-align-left"></i> ${folder.description}`;
+            } else {
+                folderDescDisplay.innerHTML = '<span style="color: var(--gray); font-style: italic;"><i class="fas fa-align-left"></i> Sem descrição</span>';
+            }
+            
+            folderCreatedAt.textContent = new Date(folder.createdAt).toLocaleDateString('pt-BR');
             
             // Atualizar tags
             folderTagsDisplay.innerHTML = '';
@@ -1476,12 +1990,13 @@
                     const tagElement = document.createElement('span');
                     tagElement.className = 'tag';
                     tagElement.innerHTML = `<i class="fas fa-tag"></i> ${tag}`;
+                    tagElement.style.backgroundColor = `${folder.color}15`;
+                    tagElement.style.color = folder.color;
                     folderTagsDisplay.appendChild(tagElement);
                 });
             }
             
             // Mostrar o card de gerenciamento
-            console.log('Mostrando card de gerenciamento');
             manageFolderCard.style.display = 'block';
             
             // Atualizar a lista de vídeos na pasta
@@ -1509,6 +2024,7 @@
             folderDescriptionInput.value = folder.description || '';
             folderColorInput.value = folder.color;
             folderTagsInput.value = folder.tags ? folder.tags.join(', ') : '';
+            colorPreview.style.backgroundColor = folder.color;
             
             // Atualizar o título do formulário
             document.querySelector('.card-title i').className = 'fas fa-edit';
@@ -1584,22 +2100,31 @@
             videoIds.forEach(videoId => {
                 const video = videos.find(v => v.id == videoId);
                 if (video) {
+                    const videoColor = generateColorFromString(video.title);
+                    const folderColor = currentFolder.color;
+                    
                     html += `
                         <div class="video-in-folder" data-video-id="${video.id}">
                             <div class="video-in-folder-badge">
-                                <i class="fas fa-folder"></i> ${currentFolder.name}
+                                <i class="fas fa-folder" style="color: ${folderColor};"></i> ${currentFolder.name}
                             </div>
                             <button class="remove-video-btn" title="Remover vídeo da pasta">
                                 <i class="fas fa-times"></i>
                             </button>
-                            <div class="video-thumb-small" style="background: linear-gradient(135deg, ${currentFolder.color}, ${currentFolder.color}dd);">
-                                <i class="fas fa-play"></i>
+                            <div class="video-thumb-small" style="background: linear-gradient(45deg, ${videoColor}, ${folderColor});">
+                                <div class="video-preview">
+                                    <div class="video-preview-overlay">
+                                        <div class="preview-play-btn">
+                                            <i class="fas fa-play"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="video-info-small">
                                 <div class="video-name-small" title="${video.title}">${video.title}</div>
                                 <div class="video-meta-small">
-                                    <span>${formatDuration(video.duration)}</span>
-                                    <span>${formatFileSize(video.bytes)}</span>
+                                    <span><i class="fas fa-clock"></i> ${formatDuration(video.duration)}</span>
+                                    <span><i class="fas fa-file"></i> ${formatFileSize(video.bytes)}</span>
                                 </div>
                             </div>
                         </div>
@@ -1702,21 +2227,23 @@
                             Vídeos sem Pasta (${videosWithoutFolder.length})
                         </div>
                         <div class="video-section-subtitle">
+                            <span class="status-indicator status-available"></span>
                             Esses vídeos ainda não estão organizados em nenhuma pasta
                         </div>
                     `;
                     
                     videosWithoutFolder.forEach(item => {
                         const video = item.video;
+                        const videoColor = generateColorFromString(video.title);
                         html += `
                             <div class="video-select-item" data-video-id="${video.id}">
                                 <input type="checkbox" class="video-select-checkbox" id="video-${video.id}" value="${video.id}">
                                 <div class="video-select-info">
                                     <div class="video-select-name">${video.title}</div>
                                     <div class="video-select-meta">
-                                        <span>${formatDuration(video.duration)}</span>
-                                        <span>${formatFileSize(video.bytes)}</span>
-                                        <span>${new Date(video.uploadedAt).toLocaleDateString('pt-BR')}</span>
+                                        <span><i class="fas fa-clock"></i> ${formatDuration(video.duration)}</span>
+                                        <span><i class="fas fa-file"></i> ${formatFileSize(video.bytes)}</span>
+                                        <span><i class="fas fa-calendar"></i> ${new Date(video.uploadedAt).toLocaleDateString('pt-BR')}</span>
                                     </div>
                                     <div style="font-size: 0.75rem; color: var(--success); margin-top: 3px;">
                                         <i class="fas fa-folder-plus"></i> Disponível para adicionar
@@ -1740,6 +2267,7 @@
                             Vídeos em Outras Pastas (${videosInOtherFolders.length})
                         </div>
                         <div class="video-section-subtitle">
+                            <span class="status-indicator status-in-folder"></span>
                             Esses vídeos já estão organizados em outras pastas, mas podem ser adicionados a esta também
                         </div>
                     `;
@@ -1755,17 +2283,17 @@
                                 <div class="video-select-info">
                                     <div class="video-select-name">${video.title}</div>
                                     <div class="video-select-meta">
-                                        <span>${formatDuration(video.duration)}</span>
-                                        <span>${formatFileSize(video.bytes)}</span>
-                                        <span>${new Date(video.uploadedAt).toLocaleDateString('pt-BR')}</span>
+                                        <span><i class="fas fa-clock"></i> ${formatDuration(video.duration)}</span>
+                                        <span><i class="fas fa-file"></i> ${formatFileSize(video.bytes)}</span>
+                                        <span><i class="fas fa-calendar"></i> ${new Date(video.uploadedAt).toLocaleDateString('pt-BR')}</span>
                                     </div>
                                     <div style="font-size: 0.75rem; color: var(--primary); margin-top: 3px;">
                                         <i class="fas fa-folder"></i> Já está em: 
                                         ${item.folders.map((folder, index) => 
-                                            `<span class="folder-badge" style="background-color: ${folder.color}20; color: ${folder.color};">
+                                            `<span class="folder-badge" style="background-color: ${folder.color}20; color: ${folder.color}; margin-right: 5px; margin-top: 2px;">
                                                 <i class="fas fa-folder" style="color: ${folder.color};"></i> ${folder.name}
                                             </span>`
-                                        ).join(' ')}
+                                        ).join('')}
                                     </div>
                                 </div>
                             </div>
@@ -1838,44 +2366,52 @@
         function addMultipleVideosToFolder() {
             if (!currentFolder || selectedVideoIds.size === 0) return;
 
-            const folderIndex = folders.findIndex(f => f.id === currentFolder.id);
-            if (folderIndex === -1) return;
+            confirmAddMultipleVideosBtn.innerHTML = '<div class="loading"></div>';
+            confirmAddMultipleVideosBtn.disabled = true;
+            
+            setTimeout(() => {
+                const folderIndex = folders.findIndex(f => f.id === currentFolder.id);
+                if (folderIndex === -1) return;
 
-            let addedCount = 0;
-            let alreadyInFolder = 0;
-            
-            selectedVideoIds.forEach(videoId => {
-                if (!folders[folderIndex].videoIds.includes(videoId)) {
-                    folders[folderIndex].videoIds.push(videoId);
-                    addedCount++;
+                let addedCount = 0;
+                let alreadyInFolder = 0;
+                
+                selectedVideoIds.forEach(videoId => {
+                    if (!folders[folderIndex].videoIds.includes(videoId)) {
+                        folders[folderIndex].videoIds.push(videoId);
+                        addedCount++;
+                    } else {
+                        alreadyInFolder++;
+                    }
+                });
+                
+                if (addedCount > 0) {
+                    folders[folderIndex].updatedAt = new Date().toISOString();
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('video_folders', JSON.stringify(folders));
+                    
+                    // Atualizar a interface
+                    updateVideosInFolder();
+                    updateFoldersList();
+                    
+                    // Fechar o modal
+                    addMultipleVideosModal.style.display = 'none';
+                    selectedVideoIds.clear();
+                    
+                    // Mostrar notificação
+                    let message = `✅ ${addedCount} vídeo(s) adicionado(s) à pasta com sucesso!`;
+                    if (alreadyInFolder > 0) {
+                        message += ` (${alreadyInFolder} já estavam na pasta)`;
+                    }
+                    showNotification(message);
                 } else {
-                    alreadyInFolder++;
+                    showNotification(`ℹ️ Nenhum vídeo novo foi adicionado. ${alreadyInFolder} vídeo(s) já estavam na pasta.`);
                 }
-            });
-            
-            if (addedCount > 0) {
-                folders[folderIndex].updatedAt = new Date().toISOString();
                 
-                // Salvar no localStorage
-                localStorage.setItem('video_folders', JSON.stringify(folders));
-                
-                // Atualizar a interface
-                updateVideosInFolder();
-                updateFoldersList();
-                
-                // Fechar o modal
-                addMultipleVideosModal.style.display = 'none';
-                selectedVideoIds.clear();
-                
-                // Mostrar notificação
-                let message = `✅ ${addedCount} vídeo(s) adicionado(s) à pasta com sucesso!`;
-                if (alreadyInFolder > 0) {
-                    message += ` (${alreadyInFolder} já estavam na pasta)`;
-                }
-                showNotification(message);
-            } else {
-                showNotification(`ℹ️ Nenhum vídeo novo foi adicionado. ${alreadyInFolder} vídeo(s) já estavam na pasta.`);
-            }
+                confirmAddMultipleVideosBtn.innerHTML = '<i class="fas fa-check"></i> Adicionar Selecionados';
+                confirmAddMultipleVideosBtn.disabled = false;
+            }, 500);
         }
 
         function removeVideoFromFolder(videoId) {
@@ -1902,6 +2438,7 @@
             currentFolder = null;
             folderForm.reset();
             folderColorInput.value = '#6366f1';
+            colorPreview.style.backgroundColor = '#6366f1';
             document.querySelector('.card-title i').className = 'fas fa-plus-circle';
             document.querySelector('.card-title').querySelector('span').textContent = 'Criar Nova Pasta';
         }
