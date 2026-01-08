@@ -2084,7 +2084,7 @@
                             </div>
                             <div class="share-input-group">
                                 <input type="text" id="directLink" class="share-input direct-link" readonly 
-                                       placeholder="O link será gerado automaticamente...">
+                                       placeholder="https://res.cloudinary.com/.../video.mp4">
                                 <button class="btn btn-success" id="copyDirectBtn" disabled>
                                     <i class="fas fa-copy"></i>
                                     Copiar
@@ -2144,12 +2144,6 @@
         const CLOUDINARY_CLOUD_NAME = 'dxg23icni';
         const CLOUDINARY_UPLOAD_PRESET = 'video_share_public';
         const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
-        
-        // ✅✅✅ CONFIGURAÇÃO AUTOMÁTICA DO SEU DOMÍNIO ✅✅✅
-        // O sistema automaticamente detecta o seu domínio
-        const CURRENT_DOMAIN = window.location.origin; // Ex: https://seusite.com
-        const CURRENT_PATH = window.location.pathname.replace(/\/[^\/]*$/, '/'); // Diretório atual
-        const USE_MY_OWN_DOMAIN = true; // Ativar para usar seu próprio domínio
         
         // Elementos DOM
         const uploadArea = document.getElementById('uploadArea');
@@ -2236,55 +2230,6 @@
         let videoToEdit = null;
         let isFullscreen = false;
         let previewIsFullscreen = false;
-
-        // ========== FUNÇÕES PARA GERAR LINKS PERSONALIZADOS ==========
-
-        // Função para extrair o nome do arquivo do public_id
-        function extractFileNameFromPublicId(publicId) {
-            if (!publicId) return 'video';
-            // Ex: "video_share_public/abc123def456" -> pega a parte após a barra
-            const parts = publicId.split('/');
-            return parts.length > 1 ? parts[1] : parts[0];
-        }
-
-        // Função para gerar link do seu próprio domínio
-        function generateMyDomainLink(video) {
-            if (!video || !video.publicId) {
-                console.warn('Não foi possível gerar link personalizado: publicId ausente');
-                return video.url; // Fallback para URL do Cloudinary
-            }
-            
-            const fileName = extractFileNameFromPublicId(video.publicId);
-            const fileExtension = video.format || 'mp4';
-            
-            // Gera o link baseado no seu domínio atual
-            if (USE_MY_OWN_DOMAIN) {
-                // Ex: https://seusite.com/videos/abc123def456.mp4
-                return `${CURRENT_DOMAIN}/videos/${fileName}.${fileExtension}`;
-            } else {
-                // Usa o Cloudinary como fallback
-                return `${video.url}.${fileExtension}`;
-            }
-        }
-
-        // Função para atualizar links existentes no localStorage
-        function updateExistingVideosLinks() {
-            if (!USE_MY_OWN_DOMAIN) return;
-            
-            let updated = false;
-            videos.forEach(video => {
-                if (video.url && video.url.includes('cloudinary.com') && !video.directMp4Url.includes(CURRENT_DOMAIN)) {
-                    video.directMp4Url = generateMyDomainLink(video);
-                    updated = true;
-                    console.log('Link atualizado para:', video.directMp4Url);
-                }
-            });
-            
-            if (updated) {
-                localStorage.setItem('cloudinary_videos', JSON.stringify(videos));
-                console.log('Links dos vídeos existentes atualizados para seu domínio');
-            }
-        }
 
         // ========== EVENT LISTENERS ==========
 
@@ -2868,7 +2813,7 @@
                     const response = JSON.parse(xhr.responseText);
                     console.log('Upload concluído:', response);
                     
-                    // Criar objeto de vídeo com link MP4 personalizado
+                    // Criar objeto de vídeo com link MP4 direto
                     const videoData = {
                         id: Date.now(),
                         publicId: response.public_id,
@@ -2880,15 +2825,9 @@
                         uploadedAt: new Date().toISOString(),
                         title: title,
                         shareId: generateShareId(),
-                        // Gera link personalizado baseado no SEU domínio
-                        directMp4Url: generateMyDomainLink({
-                            publicId: response.public_id,
-                            format: response.format,
-                            url: response.secure_url
-                        })
+                        // Link direto MP4 - adiciona .mp4 ao final para download direto
+                        directMp4Url: `${response.secure_url}.mp4`
                     };
-                    
-                    console.log('Link personalizado gerado:', videoData.directMp4Url);
                     
                     // Salvar localmente
                     saveVideoLocally(videoData);
@@ -3159,13 +3098,11 @@
             // Gerar link para visualização limpa
             const cleanLink = generateCleanLink(video);
             
-            // Link direto personalizado - usa SEU domínio se configurado
-            const directVideoLink = video.directMp4Url || generateMyDomainLink(video);
+            // Link direto do Cloudinary - FORÇA .mp4 para download direto
+            const directVideoLink = video.directMp4Url || `${video.url}.mp4`;
             
             console.log('Link limpo:', cleanLink);
             console.log('Link direto MP4:', directVideoLink);
-            console.log('Usando domínio personalizado:', USE_MY_OWN_DOMAIN ? 'SIM' : 'NÃO');
-            console.log('Seu domínio:', CURRENT_DOMAIN);
             
             // Atualizar campos
             shareLink.value = cleanLink;
@@ -3322,16 +3259,9 @@
 
         window.addEventListener('load', () => {
             console.log('Vídeos carregados do localStorage:', videos);
-            console.log('Seu domínio detectado:', CURRENT_DOMAIN);
-            console.log('Usando domínio personalizado:', USE_MY_OWN_DOMAIN ? 'SIM' : 'NÃO');
             
             // Atualizar estatísticas
             updateStats();
-            
-            // Atualizar links dos vídeos existentes para usar seu domínio
-            if (USE_MY_OWN_DOMAIN) {
-                updateExistingVideosLinks();
-            }
             
             // Verificar se é modo clean (página limpa)
             const urlParams = new URLSearchParams(window.location.search);
@@ -3398,12 +3328,6 @@
             
             // Verificar imediatamente
             checkPlayerVisibility();
-            
-            // Mostrar mensagem informativa sobre o domínio
-            if (USE_MY_OWN_DOMAIN) {
-                console.log('🔗 Links gerados com seu domínio:', CURRENT_DOMAIN);
-                console.log('📁 Os links serão no formato:', `${CURRENT_DOMAIN}/videos/nomedovideo.mp4`);
-            }
         });
     </script>
 </body>
