@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoShare - Organizar em Pastas</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --success: #10b981;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Botão Voltar */
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            min-height: 400px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Formulário de Pasta */
+        .folder-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-input.color-picker {
+            height: 45px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Lista de Pastas */
+        .folders-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .folder-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid #e5e7eb;
+            position: relative;
+        }
+
+        .folder-item:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .folder-item.selected {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+        }
+
+        .folder-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .folder-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .folder-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .folder-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.75rem;
+            color: var(--gray);
+            flex-wrap: wrap;
+        }
+
+        /* Botões de ação */
+        .folder-actions {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: var(--dark);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .action-btn.open:hover {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        /* Gerenciar Vídeos na Pasta */
+        .videos-in-folder {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .video-in-folder {
+            background: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .video-in-folder:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-thumb-small {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+        }
+
+        .video-info-small {
+            padding: 10px;
+        }
+
+        .video-name-small {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .video-meta-small {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+
+        .add-video-btn {
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--primary);
+        }
+
+        .add-video-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: scale(1.02);
+        }
+
+        .add-video-btn i {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-text {
+            margin-bottom: 30px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Notificação */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--success), var(--secondary));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        /* Estado vazio */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+
+        /* Tags */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag i {
+            font-size: 10px;
+        }
+
+        /* Lista de vídeos disponíveis no modal */
+        .available-videos-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px;
+            background: var(--light);
+        }
+
+        .video-select-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .video-select-item:hover {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: var(--primary);
+        }
+
+        .video-select-item.selected {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+        }
+
+        .video-select-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .video-select-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .video-select-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+
+        .video-select-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Controles de seleção */
+        .selection-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .selection-info {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .selection-info strong {
+            color: var(--primary);
+        }
+
+        /* Botão de remover vídeo da pasta */
+        .remove-video-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+
+        .video-in-folder:hover .remove-video-btn {
+            opacity: 1;
+        }
+
+        .remove-video-btn:hover {
+            background: var(--danger);
+            transform: scale(1.1);
+        }
+
+        /* Seções de vídeos separadas */
+        .video-section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 15px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .video-section-subtitle {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        /* Modal de visualização de vídeo */
+        .video-viewer {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            background: var(--dark);
+        }
+
+        .video-player {
+            width: 100%;
+            max-height: 400px;
+            background: #000;
+        }
+
+        .video-info-large {
+            text-align: left;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .video-title-large {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .video-meta-large {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .video-description {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--dark);
+        }
+
+        .link-container {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .link-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .link-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .link-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        .link-btn {
+            padding: 10px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .link-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .link-btn.success {
+            background: var(--success);
+        }
+
+        .link-btn.success:hover {
+            background: #0da271;
+        }
+
+        /* Badge de pasta */
+        .folder-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+
+        .video-in-folder-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            z-index: 5;
+        }
+
+        /* Separador entre seções de vídeos */
+        .separator {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 20px 0;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div>
+                        <h1>Organizar em Pastas</h1>
+                        <p>Crie pastas para organizar seus vídeos por categoria</p>
+                    </div>
+                </div>
+                <button class="back-btn" id="backToMain">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar para Vídeos
+                </button>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Coluna da Esquerda: Criar/Editar Pastas -->
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-plus-circle"></i>
+                        Criar Nova Pasta
+                    </h2>
+                    
+                    <form class="folder-form" id="folderForm">
+                        <div class="form-group">
+                            <label class="form-label" for="folderName">Nome da Pasta</label>
+                            <input type="text" id="folderName" class="form-input" 
+                                   placeholder="Ex: Vídeos Engraçados" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="folderDescription">Descrição</label>
+                            <textarea id="folderDescription" class="form-input" 
+                                      placeholder="Descreva o tipo de vídeos desta pasta..." 
+                                      rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="folderColor">Cor da Pasta</label>
+                            <input type="color" id="folderColor" class="form-input color-picker" 
+                                   value="#6366f1" title="Escolha uma cor para a pasta">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="folderTags">Tags (separadas por vírgula)</label>
+                            <input type="text" id="folderTags" class="form-input" 
+                                   placeholder="Ex: engraçado, humor, diversão">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Salvar Pasta
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Coluna da Direita: Lista de Pastas -->
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-folder-open"></i>
+                        Suas Pastas
+                    </h2>
+                    
+                    <div class="folders-list" id="foldersList">
+                        <!-- Pastas serão carregadas aqui -->
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <p>Nenhuma pasta criada</p>
+                            <p>Crie sua primeira pasta para organizar os vídeos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Expandido: Gerenciar Vídeos da Pasta Selecionada -->
+        <div class="card" id="manageFolderCard" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="card-title" id="selectedFolderTitle" style="margin-bottom: 0;">
+                    <i class="fas fa-folder"></i>
+                    <span id="folderNameDisplay">Nome da Pasta</span>
+                </h2>
+                
+                <button class="btn btn-success" id="addMultipleVideosBtn">
+                    <i class="fas fa-plus-circle"></i>
+                    Adicionar Vídeos
+                </button>
+            </div>
+            
+            <div class="folder-meta" style="margin-bottom: 20px;">
+                <span id="folderDescDisplay"></span>
+                <div class="tags-container" id="folderTagsDisplay"></div>
+            </div>
+            
+            <h3 class="card-title" style="font-size: 1.1rem;">
+                <i class="fas fa-video"></i>
+                Vídeos nesta Pasta (<span id="videoCount">0</span>)
+            </h3>
+            
+            <div class="videos-in-folder" id="videosInFolder">
+                <!-- Vídeos serão carregados aqui -->
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <div class="empty-icon">
+                        <i class="fas fa-video-slash"></i>
+                    </div>
+                    <p>Nenhum vídeo nesta pasta</p>
+                    <p>Adicione vídeos usando o botão acima</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Deleção -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                Confirmar Exclusão
+            </h3>
+            <p class="modal-text" id="deleteModalText">
+                Tem certeza que deseja excluir esta pasta? Os vídeos não serão excluídos, apenas removidos da pasta.
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i>
+                    Excluir
+                </button>
+                <button class="btn btn-primary" id="cancelDeleteBtn">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar Múltiplos Vídeos à Pasta -->
+    <div class="modal" id="addMultipleVideosModal">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                <i class="fas fa-video"></i>
+                Adicionar Vídeos à Pasta
+                <span style="font-size: 0.9rem; color: var(--gray); margin-left: 10px;">
+                    (<span id="selectedVideosCount">0</span> selecionados)
+                </span>
+            </h3>
+            
+            <div class="selection-controls">
+                <div class="selection-info">
+                    Selecione os vídeos que deseja adicionar à pasta
+                    <span id="totalAvailableVideos">0</span> vídeos disponíveis
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-warning" id="selectAllVideosBtn">
+                        <i class="fas fa-check-square"></i>
+                        Selecionar Todos
+                    </button>
+                    <button class="btn btn-warning" id="deselectAllVideosBtn">
+                        <i class="fas fa-square"></i>
+                        Desmarcar Todos
+                    </button>
+                </div>
+            </div>
+            
+            <div class="available-videos-container" id="availableVideosList">
+                <!-- Lista de vídeos disponíveis -->
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-video-slash"></i>
+                    </div>
+                    <p>Não há vídeos disponíveis</p>
+                    <p>Todos os vídeos já estão nesta pasta ou você ainda não tem vídeos</p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-success" id="confirmAddMultipleVideosBtn">
+                    <i class="fas fa-check"></i>
+                    Adicionar Selecionados (<span id="selectedCount">0</span>)
+                </button>
+                <button class="btn btn-danger" id="cancelAddMultipleVideosBtn">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização de Vídeo -->
+    <div class="modal" id="viewVideoModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <h3 class="modal-title">
+                <i class="fas fa-play-circle"></i>
+                <span id="viewVideoTitle">Visualizar Vídeo</span>
+            </h3>
+            
+            <div class="video-viewer">
+                <video class="video-player" id="videoPlayer" controls>
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+            </div>
+            
+            <div class="video-info-large">
+                <h4 class="video-title-large" id="viewVideoName"></h4>
+                <div class="video-meta-large">
+                    <span><i class="fas fa-clock"></i> <span id="viewVideoDuration"></span></span>
+                    <span><i class="fas fa-file"></i> <span id="viewVideoSize"></span></span>
+                    <span><i class="fas fa-calendar"></i> <span id="viewVideoDate"></span></span>
+                </div>
+                <div class="video-description" id="viewVideoDescription"></div>
+            </div>
+            
+            <div class="link-container">
+                <div class="link-label">
+                    <i class="fas fa-share-alt"></i>
+                    Link para Compartilhar
+                </div>
+                <div class="link-input-group">
+                    <input type="text" class="link-input" id="shareLinkInput" 
+                           readonly value="https://seusite.com/video?id=">
+                    <button class="link-btn" id="copyShareLinkBtn">
+                        <i class="fas fa-copy"></i>
+                        Copiar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="link-container">
+                <div class="link-label">
+                    <i class="fas fa-download"></i>
+                    Link Direto do Vídeo (.mp4)
+                </div>
+                <div class="link-input-group">
+                    <input type="text" class="link-input" id="directLinkInput" 
+                           readonly value="">
+                    <a class="link-btn" id="downloadVideoBtn" target="_blank" download>
+                        <i class="fas fa-download"></i>
+                        Baixar
+                    </a>
+                    <button class="link-btn" id="copyDirectLinkBtn">
+                        <i class="fas fa-copy"></i>
+                        Copiar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="closeViewVideoModalBtn">
+                    <i class="fas fa-times"></i>
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Elementos DOM
+        const backToMain = document.getElementById('backToMain');
+        const folderForm = document.getElementById('folderForm');
+        const folderNameInput = document.getElementById('folderName');
+        const folderDescriptionInput = document.getElementById('folderDescription');
+        const folderColorInput = document.getElementById('folderColor');
+        const folderTagsInput = document.getElementById('folderTags');
+        const foldersList = document.getElementById('foldersList');
+        const manageFolderCard = document.getElementById('manageFolderCard');
+        const selectedFolderTitle = document.getElementById('selectedFolderTitle');
+        const folderNameDisplay = document.getElementById('folderNameDisplay');
+        const folderDescDisplay = document.getElementById('folderDescDisplay');
+        const folderTagsDisplay = document.getElementById('folderTagsDisplay');
+        const videosInFolder = document.getElementById('videosInFolder');
+        const addMultipleVideosBtn = document.getElementById('addMultipleVideosBtn');
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteModalText = document.getElementById('deleteModalText');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const addMultipleVideosModal = document.getElementById('addMultipleVideosModal');
+        const availableVideosList = document.getElementById('availableVideosList');
+        const confirmAddMultipleVideosBtn = document.getElementById('confirmAddMultipleVideosBtn');
+        const cancelAddMultipleVideosBtn = document.getElementById('cancelAddMultipleVideosBtn');
+        const selectAllVideosBtn = document.getElementById('selectAllVideosBtn');
+        const deselectAllVideosBtn = document.getElementById('deselectAllVideosBtn');
+        const selectedVideosCount = document.getElementById('selectedVideosCount');
+        const selectedCount = document.getElementById('selectedCount');
+        const totalAvailableVideos = document.getElementById('totalAvailableVideos');
+        const videoCount = document.getElementById('videoCount');
+        const notification = document.getElementById('notification');
+        
+        // Elementos do modal de visualização de vídeo
+        const viewVideoModal = document.getElementById('viewVideoModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const viewVideoTitle = document.getElementById('viewVideoTitle');
+        const viewVideoName = document.getElementById('viewVideoName');
+        const viewVideoDuration = document.getElementById('viewVideoDuration');
+        const viewVideoSize = document.getElementById('viewVideoSize');
+        const viewVideoDate = document.getElementById('viewVideoDate');
+        const viewVideoDescription = document.getElementById('viewVideoDescription');
+        const shareLinkInput = document.getElementById('shareLinkInput');
+        const directLinkInput = document.getElementById('directLinkInput');
+        const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+        const copyDirectLinkBtn = document.getElementById('copyDirectLinkBtn');
+        const downloadVideoBtn = document.getElementById('downloadVideoBtn');
+        const closeViewVideoModalBtn = document.getElementById('closeViewVideoModalBtn');
+
+        // Variáveis
+        let folders = [];
+        let videos = [];
+        let currentFolder = null;
+        let folderToDelete = null;
+        let selectedVideoIds = new Set();
+        let currentViewingVideo = null;
+
+        // Event Listeners
+        backToMain.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        folderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveFolder();
+        });
+
+        confirmDeleteBtn.addEventListener('click', deleteFolder);
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteModal.style.display = 'none';
+            folderToDelete = null;
+        });
+
+        addMultipleVideosBtn.addEventListener('click', () => {
+            if (currentFolder) {
+                showAddMultipleVideosModal();
+            }
+        });
+
+        confirmAddMultipleVideosBtn.addEventListener('click', addMultipleVideosToFolder);
+        cancelAddMultipleVideosBtn.addEventListener('click', () => {
+            addMultipleVideosModal.style.display = 'none';
+            selectedVideoIds.clear();
+        });
+
+        selectAllVideosBtn.addEventListener('click', selectAllVideos);
+        deselectAllVideosBtn.addEventListener('click', deselectAllVideos);
+
+        // Event Listeners para o modal de visualização de vídeo
+        copyShareLinkBtn.addEventListener('click', copyShareLink);
+        copyDirectLinkBtn.addEventListener('click', copyDirectLink);
+        closeViewVideoModalBtn.addEventListener('click', () => {
+            viewVideoModal.style.display = 'none';
+            videoPlayer.pause();
+            currentViewingVideo = null;
+        });
+
+        // Fechar modais clicando fora
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                deleteModal.style.display = 'none';
+                folderToDelete = null;
+            }
+        });
+
+        addMultipleVideosModal.addEventListener('click', (e) => {
+            if (e.target === addMultipleVideosModal) {
+                addMultipleVideosModal.style.display = 'none';
+                selectedVideoIds.clear();
+            }
+        });
+
+        viewVideoModal.addEventListener('click', (e) => {
+            if (e.target === viewVideoModal) {
+                viewVideoModal.style.display = 'none';
+                videoPlayer.pause();
+                currentViewingVideo = null;
+            }
+        });
+
+        // DELEGAÇÃO DE EVENTOS PARA TODOS OS BOTÕES DAS PASTAS
+        foldersList.addEventListener('click', function(e) {
+            // Botão abrir pasta
+            const openBtn = e.target.closest('.open-folder-btn');
+            if (openBtn) {
+                e.stopPropagation();
+                const folderId = openBtn.getAttribute('data-folder-id');
+                console.log('Abrir pasta clicado:', folderId);
+                selectFolder(folderId);
+                return;
+            }
+            
+            // Botão editar pasta
+            const editBtn = e.target.closest('.edit-folder-btn');
+            if (editBtn) {
+                e.stopPropagation();
+                const folderId = editBtn.getAttribute('data-folder-id');
+                console.log('Editar pasta clicado:', folderId);
+                editFolder(folderId);
+                return;
+            }
+            
+            // Botão deletar pasta
+            const deleteBtn = e.target.closest('.delete-folder-btn');
+            if (deleteBtn) {
+                e.stopPropagation();
+                const folderId = deleteBtn.getAttribute('data-folder-id');
+                console.log('Deletar pasta clicado:', folderId);
+                showDeleteModal(folderId);
+                return;
+            }
+            
+            // Clique na própria pasta (área fora dos botões)
+            const folderItem = e.target.closest('.folder-item');
+            if (folderItem) {
+                // Se clicou na pasta mas não em um botão de ação
+                if (!e.target.closest('.folder-actions')) {
+                    const folderId = folderItem.getAttribute('data-folder-id');
+                    console.log('Pasta clicada:', folderId);
+                    selectFolder(folderId);
+                }
+            }
+        });
+
+        // Função para visualizar vídeo
+        function viewVideo(videoId) {
+            const video = videos.find(v => v.id == videoId);
+            if (!video) return;
+
+            currentViewingVideo = video;
+            
+            // Configurar o player de vídeo
+            videoPlayer.src = video.url;
+            videoPlayer.poster = video.thumbnail || '';
+            
+            // Atualizar informações do vídeo
+            viewVideoTitle.textContent = video.title;
+            viewVideoName.textContent = video.title;
+            viewVideoDuration.textContent = formatDuration(video.duration);
+            viewVideoSize.textContent = formatFileSize(video.bytes);
+            viewVideoDate.textContent = new Date(video.uploadedAt).toLocaleDateString('pt-BR');
+            viewVideoDescription.textContent = video.description || 'Sem descrição';
+            
+            // Atualizar links
+            const shareUrl = `${window.location.origin}/index.html?video=${video.id}`;
+            shareLinkInput.value = shareUrl;
+            
+            directLinkInput.value = video.url;
+            downloadVideoBtn.href = video.url;
+            downloadVideoBtn.download = `${video.title}.mp4`;
+            
+            // Mostrar o modal
+            viewVideoModal.style.display = 'flex';
+            
+            // Reproduzir o vídeo automaticamente
+            videoPlayer.play().catch(e => {
+                console.log('Reprodução automática bloqueada:', e);
+            });
+        }
+
+        function copyShareLink() {
+            shareLinkInput.select();
+            shareLinkInput.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            copyShareLinkBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+            copyShareLinkBtn.classList.add('success');
+            
+            setTimeout(() => {
+                copyShareLinkBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+                copyShareLinkBtn.classList.remove('success');
+            }, 2000);
+        }
+
+        function copyDirectLink() {
+            directLinkInput.select();
+            directLinkInput.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            copyDirectLinkBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+            copyDirectLinkBtn.classList.add('success');
+            
+            setTimeout(() => {
+                copyDirectLinkBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+                copyDirectLinkBtn.classList.remove('success');
+            }, 2000);
+        }
+
+        // Funções
+        function saveFolder() {
+            const folderData = {
+                id: currentFolder ? currentFolder.id : 'folder_' + Date.now(),
+                name: folderNameInput.value.trim(),
+                description: folderDescriptionInput.value.trim(),
+                color: folderColorInput.value,
+                tags: folderTagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                createdAt: currentFolder ? currentFolder.createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                videoIds: currentFolder ? currentFolder.videoIds : []
+            };
+
+            // Verificar se já existe uma pasta com esse nome
+            if (!currentFolder) {
+                const existingFolder = folders.find(f => f.name.toLowerCase() === folderData.name.toLowerCase());
+                if (existingFolder) {
+                    showNotification('❌ Já existe uma pasta com esse nome!', true);
+                    return;
+                }
+            }
+
+            if (currentFolder) {
+                // Atualizar pasta existente
+                const index = folders.findIndex(f => f.id === currentFolder.id);
+                if (index !== -1) {
+                    folders[index] = folderData;
+                }
+            } else {
+                // Adicionar nova pasta
+                folders.unshift(folderData);
+            }
+
+            // Salvar no localStorage
+            localStorage.setItem('video_folders', JSON.stringify(folders));
+            
+            // Atualizar a interface
+            updateFoldersList();
+            
+            // Resetar formulário
+            resetFolderForm();
+            
+            // Mostrar notificação
+            showNotification(currentFolder ? '✅ Pasta atualizada com sucesso!' : '✅ Pasta criada com sucesso!');
+            
+            // Se era uma edição, voltar para a visualização
+            if (currentFolder) {
+                selectFolder(folderData.id);
+            }
+        }
+
+        function updateFoldersList() {
+            console.log('Atualizando lista de pastas...', folders);
+            
+            if (folders.length === 0) {
+                foldersList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <p>Nenhuma pasta criada</p>
+                        <p>Crie sua primeira pasta para organizar os vídeos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            folders.forEach(folder => {
+                const videoCount = folder.videoIds ? folder.videoIds.length : 0;
+                const isSelected = currentFolder && currentFolder.id === folder.id;
+                
+                html += `
+                    <div class="folder-item ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}">
+                        <div class="folder-icon" style="background-color: ${folder.color};">
+                            <i class="fas fa-folder${videoCount > 0 ? '-open' : ''}"></i>
+                        </div>
+                        <div class="folder-info">
+                            <div class="folder-name">${folder.name}</div>
+                            <div class="folder-meta">
+                                <span>${videoCount} vídeo${videoCount !== 1 ? 's' : ''}</span>
+                                <span>${new Date(folder.createdAt).toLocaleDateString('pt-BR')}</span>
+                                ${folder.description ? `<span>${folder.description.substring(0, 50)}${folder.description.length > 50 ? '...' : ''}</span>` : ''}
+                            </div>
+                            ${folder.tags && folder.tags.length > 0 ? `
+                                <div class="tags-container">
+                                    ${folder.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                    ${folder.tags.length > 3 ? `<span class="tag">+${folder.tags.length - 3}</span>` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="folder-actions">
+                            <button class="action-btn open open-folder-btn" data-folder-id="${folder.id}" title="Abrir pasta">
+                                <i class="fas fa-folder-open"></i>
+                            </button>
+                            <button class="action-btn edit edit-folder-btn" data-folder-id="${folder.id}" title="Editar pasta">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete delete-folder-btn" data-folder-id="${folder.id}" title="Excluir pasta">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            foldersList.innerHTML = html;
+        }
+
+        function selectFolder(folderId) {
+            console.log('Selecionando pasta ID:', folderId);
+            const folder = folders.find(f => f.id === folderId);
+            console.log('Pasta encontrada:', folder);
+            
+            if (!folder) {
+                console.error('Pasta não encontrada!');
+                showNotification('❌ Pasta não encontrada!', true);
+                return;
+            }
+
+            currentFolder = folder;
+            
+            // Adicionar efeito visual de seleção
+            document.querySelectorAll('.folder-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            const selectedItem = document.querySelector(`[data-folder-id="${folderId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('selected');
+                
+                // Adicionar animação de seleção
+                selectedItem.style.animation = 'pulse 0.3s';
+                setTimeout(() => {
+                    selectedItem.style.animation = '';
+                }, 300);
+            }
+            
+            // Atualizar a interface
+            folderNameDisplay.textContent = folder.name;
+            selectedFolderTitle.querySelector('.fa-folder').parentElement.style.backgroundColor = folder.color;
+            folderDescDisplay.textContent = folder.description || 'Sem descrição';
+            
+            // Atualizar tags
+            folderTagsDisplay.innerHTML = '';
+            if (folder.tags && folder.tags.length > 0) {
+                folder.tags.forEach(tag => {
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'tag';
+                    tagElement.innerHTML = `<i class="fas fa-tag"></i> ${tag}`;
+                    folderTagsDisplay.appendChild(tagElement);
+                });
+            }
+            
+            // Mostrar o card de gerenciamento
+            console.log('Mostrando card de gerenciamento');
+            manageFolderCard.style.display = 'block';
+            
+            // Atualizar a lista de vídeos na pasta
+            updateVideosInFolder();
+            
+            // Rolagem suave até a seção de gerenciamento
+            setTimeout(() => {
+                manageFolderCard.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start'
+                });
+            }, 300);
+            
+            showNotification(`✅ Pasta "${folder.name}" selecionada`);
+        }
+
+        function editFolder(folderId) {
+            const folder = folders.find(f => f.id === folderId);
+            if (!folder) return;
+
+            currentFolder = folder;
+            
+            // Preencher o formulário
+            folderNameInput.value = folder.name;
+            folderDescriptionInput.value = folder.description || '';
+            folderColorInput.value = folder.color;
+            folderTagsInput.value = folder.tags ? folder.tags.join(', ') : '';
+            
+            // Atualizar o título do formulário
+            document.querySelector('.card-title i').className = 'fas fa-edit';
+            document.querySelector('.card-title').querySelector('span').textContent = 'Editar Pasta';
+            
+            // Scroll para o formulário
+            folderForm.scrollIntoView({ behavior: 'smooth' });
+            
+            showNotification(`✏️ Editando pasta "${folder.name}"`);
+        }
+
+        function showDeleteModal(folderId) {
+            const folder = folders.find(f => f.id === folderId);
+            if (!folder) return;
+
+            folderToDelete = folder;
+            deleteModalText.textContent = `Tem certeza que deseja excluir a pasta "${folder.name}"? Os ${folder.videoIds ? folder.videoIds.length : 0} vídeos dentro dela não serão excluídos, apenas removidos da pasta.`;
+            deleteModal.style.display = 'flex';
+        }
+
+        function deleteFolder() {
+            if (!folderToDelete) return;
+
+            const folderName = folderToDelete.name;
+            
+            // Remover a pasta do array
+            folders = folders.filter(f => f.id !== folderToDelete.id);
+            
+            // Salvar no localStorage
+            localStorage.setItem('video_folders', JSON.stringify(folders));
+            
+            // Se a pasta atual era a que foi deletada, limpar a interface
+            if (currentFolder && currentFolder.id === folderToDelete.id) {
+                currentFolder = null;
+                manageFolderCard.style.display = 'none';
+                resetFolderForm();
+            }
+            
+            // Atualizar a interface
+            updateFoldersList();
+            
+            // Fechar o modal
+            deleteModal.style.display = 'none';
+            
+            // Mostrar notificação
+            showNotification(`✅ Pasta "${folderName}" excluída com sucesso!`);
+            
+            folderToDelete = null;
+        }
+
+        function updateVideosInFolder() {
+            if (!currentFolder) return;
+
+            const videoIds = currentFolder.videoIds || [];
+            videoCount.textContent = videoIds.length;
+            
+            if (videoIds.length === 0) {
+                videosInFolder.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-icon">
+                            <i class="fas fa-video-slash"></i>
+                        </div>
+                        <p>Nenhum vídeo nesta pasta</p>
+                        <p>Adicione vídeos usando o botão acima</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            // Adicionar vídeos que estão na pasta
+            videoIds.forEach(videoId => {
+                const video = videos.find(v => v.id == videoId);
+                if (video) {
+                    html += `
+                        <div class="video-in-folder" data-video-id="${video.id}">
+                            <div class="video-in-folder-badge">
+                                <i class="fas fa-folder"></i> ${currentFolder.name}
+                            </div>
+                            <button class="remove-video-btn" title="Remover vídeo da pasta">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <div class="video-thumb-small" style="background: linear-gradient(135deg, ${currentFolder.color}, ${currentFolder.color}dd);">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="video-info-small">
+                                <div class="video-name-small" title="${video.title}">${video.title}</div>
+                                <div class="video-meta-small">
+                                    <span>${formatDuration(video.duration)}</span>
+                                    <span>${formatFileSize(video.bytes)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            videosInFolder.innerHTML = html;
+            
+            // Adicionar event listeners aos botões de remover
+            videosInFolder.addEventListener('click', function(e) {
+                const removeBtn = e.target.closest('.remove-video-btn');
+                if (removeBtn) {
+                    e.stopPropagation();
+                    const videoItem = removeBtn.closest('.video-in-folder');
+                    const videoId = videoItem.getAttribute('data-video-id');
+                    const video = videos.find(v => v.id == videoId);
+                    if (video) {
+                        if (confirm(`Deseja remover o vídeo "${video.title}" desta pasta?`)) {
+                            removeVideoFromFolder(videoId);
+                        }
+                    }
+                }
+                
+                // Clique no vídeo para visualizar
+                const videoItem = e.target.closest('.video-in-folder');
+                if (videoItem && !e.target.closest('.remove-video-btn')) {
+                    const videoId = videoItem.getAttribute('data-video-id');
+                    viewVideo(videoId);
+                }
+            });
+        }
+
+        function getVideoFolders(videoId) {
+            // Encontrar todas as pastas que contêm este vídeo
+            return folders.filter(folder => 
+                folder.videoIds && folder.videoIds.includes(videoId.toString())
+            );
+        }
+
+        function showAddMultipleVideosModal() {
+            if (!currentFolder) return;
+
+            // Limpar seleções anteriores
+            selectedVideoIds.clear();
+            updateSelectedCount();
+            
+            // Separar vídeos em três categorias:
+            // 1. Vídeos que já estão na pasta atual (não mostrar)
+            // 2. Vídeos que não estão em nenhuma pasta
+            // 3. Vídeos que estão em outras pastas
+            
+            const videosInOtherFolders = [];
+            const videosWithoutFolder = [];
+            
+            videos.forEach(video => {
+                // Ignorar vídeos que já estão na pasta atual
+                if (currentFolder.videoIds.includes(video.id.toString())) {
+                    return;
+                }
+                
+                // Encontrar pastas que contêm este vídeo
+                const videoFolders = getVideoFolders(video.id);
+                
+                if (videoFolders.length > 0) {
+                    // Vídeo está em outras pastas
+                    videosInOtherFolders.push({
+                        video: video,
+                        folders: videoFolders
+                    });
+                } else {
+                    // Vídeo não está em nenhuma pasta
+                    videosWithoutFolder.push({
+                        video: video,
+                        folders: []
+                    });
+                }
+            });
+            
+            totalAvailableVideos.textContent = videosInOtherFolders.length + videosWithoutFolder.length;
+            
+            if (videosInOtherFolders.length === 0 && videosWithoutFolder.length === 0) {
+                availableVideosList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-video-slash"></i>
+                        </div>
+                        <p>Não há vídeos disponíveis</p>
+                        <p>Todos os vídeos já estão nesta pasta ou você ainda não tem vídeos</p>
+                    </div>
+                `;
+            } else {
+                let html = '';
+                
+                // Seção de vídeos sem pasta
+                if (videosWithoutFolder.length > 0) {
+                    html += `
+                        <div class="video-section-title">
+                            <i class="fas fa-video" style="color: var(--success);"></i>
+                            Vídeos sem Pasta (${videosWithoutFolder.length})
+                        </div>
+                        <div class="video-section-subtitle">
+                            Esses vídeos ainda não estão organizados em nenhuma pasta
+                        </div>
+                    `;
+                    
+                    videosWithoutFolder.forEach(item => {
+                        const video = item.video;
+                        html += `
+                            <div class="video-select-item" data-video-id="${video.id}">
+                                <input type="checkbox" class="video-select-checkbox" id="video-${video.id}" value="${video.id}">
+                                <div class="video-select-info">
+                                    <div class="video-select-name">${video.title}</div>
+                                    <div class="video-select-meta">
+                                        <span>${formatDuration(video.duration)}</span>
+                                        <span>${formatFileSize(video.bytes)}</span>
+                                        <span>${new Date(video.uploadedAt).toLocaleDateString('pt-BR')}</span>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--success); margin-top: 3px;">
+                                        <i class="fas fa-folder-plus"></i> Disponível para adicionar
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Separador entre seções
+                if (videosWithoutFolder.length > 0 && videosInOtherFolders.length > 0) {
+                    html += '<div class="separator"></div>';
+                }
+                
+                // Seção de vídeos em outras pastas
+                if (videosInOtherFolders.length > 0) {
+                    html += `
+                        <div class="video-section-title">
+                            <i class="fas fa-folder" style="color: var(--primary);"></i>
+                            Vídeos em Outras Pastas (${videosInOtherFolders.length})
+                        </div>
+                        <div class="video-section-subtitle">
+                            Esses vídeos já estão organizados em outras pastas, mas podem ser adicionados a esta também
+                        </div>
+                    `;
+                    
+                    videosInOtherFolders.forEach(item => {
+                        const video = item.video;
+                        const folderNames = item.folders.map(f => f.name).join(', ');
+                        const folderColors = item.folders.map(f => f.color).join(', ');
+                        
+                        html += `
+                            <div class="video-select-item" data-video-id="${video.id}">
+                                <input type="checkbox" class="video-select-checkbox" id="video-${video.id}" value="${video.id}">
+                                <div class="video-select-info">
+                                    <div class="video-select-name">${video.title}</div>
+                                    <div class="video-select-meta">
+                                        <span>${formatDuration(video.duration)}</span>
+                                        <span>${formatFileSize(video.bytes)}</span>
+                                        <span>${new Date(video.uploadedAt).toLocaleDateString('pt-BR')}</span>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--primary); margin-top: 3px;">
+                                        <i class="fas fa-folder"></i> Já está em: 
+                                        ${item.folders.map((folder, index) => 
+                                            `<span class="folder-badge" style="background-color: ${folder.color}20; color: ${folder.color};">
+                                                <i class="fas fa-folder" style="color: ${folder.color};"></i> ${folder.name}
+                                            </span>`
+                                        ).join(' ')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                availableVideosList.innerHTML = html;
+                
+                // Adicionar event listeners aos checkboxes
+                availableVideosList.addEventListener('change', function(e) {
+                    if (e.target.classList.contains('video-select-checkbox')) {
+                        const checkbox = e.target;
+                        const videoId = checkbox.value;
+                        const videoItem = checkbox.closest('.video-select-item');
+                        
+                        if (checkbox.checked) {
+                            selectedVideoIds.add(videoId);
+                            videoItem.classList.add('selected');
+                        } else {
+                            selectedVideoIds.delete(videoId);
+                            videoItem.classList.remove('selected');
+                        }
+                        
+                        updateSelectedCount();
+                    }
+                });
+                
+                // Adicionar event listener para clicar no item
+                availableVideosList.addEventListener('click', function(e) {
+                    const videoItem = e.target.closest('.video-select-item');
+                    if (videoItem && !e.target.classList.contains('video-select-checkbox')) {
+                        const checkbox = videoItem.querySelector('.video-select-checkbox');
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+            
+            addMultipleVideosModal.style.display = 'flex';
+        }
+
+        function selectAllVideos() {
+            document.querySelectorAll('.video-select-checkbox').forEach(checkbox => {
+                if (!checkbox.checked) {
+                    checkbox.checked = true;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+
+        function deselectAllVideos() {
+            document.querySelectorAll('.video-select-checkbox').forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkbox.checked = false;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+
+        function updateSelectedCount() {
+            const count = selectedVideoIds.size;
+            selectedVideosCount.textContent = count;
+            selectedCount.textContent = count;
+            
+            // Habilitar/desabilitar botão de adicionar
+            confirmAddMultipleVideosBtn.disabled = count === 0;
+        }
+
+        function addMultipleVideosToFolder() {
+            if (!currentFolder || selectedVideoIds.size === 0) return;
+
+            const folderIndex = folders.findIndex(f => f.id === currentFolder.id);
+            if (folderIndex === -1) return;
+
+            let addedCount = 0;
+            let alreadyInFolder = 0;
+            
+            selectedVideoIds.forEach(videoId => {
+                if (!folders[folderIndex].videoIds.includes(videoId)) {
+                    folders[folderIndex].videoIds.push(videoId);
+                    addedCount++;
+                } else {
+                    alreadyInFolder++;
+                }
+            });
+            
+            if (addedCount > 0) {
+                folders[folderIndex].updatedAt = new Date().toISOString();
+                
+                // Salvar no localStorage
+                localStorage.setItem('video_folders', JSON.stringify(folders));
+                
+                // Atualizar a interface
+                updateVideosInFolder();
+                updateFoldersList();
+                
+                // Fechar o modal
+                addMultipleVideosModal.style.display = 'none';
+                selectedVideoIds.clear();
+                
+                // Mostrar notificação
+                let message = `✅ ${addedCount} vídeo(s) adicionado(s) à pasta com sucesso!`;
+                if (alreadyInFolder > 0) {
+                    message += ` (${alreadyInFolder} já estavam na pasta)`;
+                }
+                showNotification(message);
+            } else {
+                showNotification(`ℹ️ Nenhum vídeo novo foi adicionado. ${alreadyInFolder} vídeo(s) já estavam na pasta.`);
+            }
+        }
+
+        function removeVideoFromFolder(videoId) {
+            if (!currentFolder) return;
+
+            const folderIndex = folders.findIndex(f => f.id === currentFolder.id);
+            if (folderIndex !== -1) {
+                folders[folderIndex].videoIds = folders[folderIndex].videoIds.filter(id => id != videoId);
+                folders[folderIndex].updatedAt = new Date().toISOString();
+                
+                // Salvar no localStorage
+                localStorage.setItem('video_folders', JSON.stringify(folders));
+                
+                // Atualizar a interface
+                updateVideosInFolder();
+                updateFoldersList();
+                
+                // Mostrar notificação
+                showNotification('✅ Vídeo removido da pasta!');
+            }
+        }
+
+        function resetFolderForm() {
+            currentFolder = null;
+            folderForm.reset();
+            folderColorInput.value = '#6366f1';
+            document.querySelector('.card-title i').className = 'fas fa-plus-circle';
+            document.querySelector('.card-title').querySelector('span').textContent = 'Criar Nova Pasta';
+        }
+
+        function formatDuration(seconds) {
+            if (!seconds || seconds === 0) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function formatFileSize(bytes) {
+            if (!bytes) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
+            else return (bytes / 1073741824).toFixed(1) + ' GB';
+        }
+
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.className = 'notification' + (isError ? ' error' : '');
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Inicialização
+        window.addEventListener('load', function() {
+            console.log('Página carregada. Inicializando sistema de pastas...');
+            
+            // Carregar dados do localStorage
+            folders = JSON.parse(localStorage.getItem('video_folders') || '[]');
+            videos = JSON.parse(localStorage.getItem('cloudinary_videos') || '[]');
+            
+            console.log('Pastas carregadas:', folders);
+            console.log('Vídeos carregados:', videos);
+            
+            // Atualizar lista de pastas
+            updateFoldersList();
+            
+            // Se houver uma pasta na URL, selecioná-la
+            const urlParams = new URLSearchParams(window.location.search);
+            const folderId = urlParams.get('folder');
+            if (folderId) {
+                // Aguardar um pouco para garantir que o DOM esteja pronto
+                setTimeout(() => {
+                    selectFolder(folderId);
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
