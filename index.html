@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <!-- VERIFICA MANUTENÇÃO -->
-  <script>
-  (async () => {
-    try {
-      const res = await fetch("/config.json", { cache: "no-store" });
-      const data = await res.json();
+    <!-- VERIFICA MANUTENÇÃO -->
+    <script>
+    (async () => {
+        try {
+            const res = await fetch("/config.json", { cache: "no-store" });
+            const data = await res.json();
 
-      if (data.maintenance === true) {
-        location.replace("/maintenance.html");
-      }
-    } catch (e) {
-      console.error("Erro ao verificar manutenção");
-    }
-  })();
-  </script>
+            if (data.maintenance === true) {
+                location.replace("/maintenance.html");
+            }
+        } catch (e) {
+            console.error("Erro ao verificar manutenção");
+        }
+    })();
+    </script>
     
     <title>VideoShare - Compartilhe Vídeos Online</title>
-    
-    <!-- Cloudinary Upload Widget (mantemos apenas para fallback) -->
-    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -145,12 +142,11 @@
             position: relative;
         }
 
-        /* CORREÇÃO PARA TELA CHEIA */
+        /* CORREÇÃO PARA TELA CHEIA - FIXADA */
         body.shared-mode .player-wrapper:fullscreen {
             background: #000;
             border-radius: 0;
             border: none;
-            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -162,16 +158,17 @@
         body.shared-mode .player-wrapper:fullscreen .video-container {
             width: 100%;
             height: 100%;
-            max-height: 100vh;
-            aspect-ratio: unset;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #000;
         }
 
         body.shared-mode .player-wrapper:fullscreen #videoPlayer {
-            width: 100%;
-            height: 100%;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
         }
 
@@ -186,32 +183,45 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        body.shared-mode .video-container {
+        /* CORREÇÃO CRÍTICA - CONTAINER DO VÍDEO AJUSTADO */
+        .video-container {
             width: 100%;
-            height: auto;
-            max-height: 80vh;
-            aspect-ratio: 16/9;
+            height: 0;
+            padding-bottom: 56.25%; /* Proporção 16:9 */
             position: relative;
             background: #000;
         }
 
-        #videoPlayer {
+        /* CORREÇÃO TOTAL - VIDEO SEMPRE VISÍVEL */
+        #videoPlayer, #previewVideoPlayer {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            display: block;
             object-fit: contain;
+            display: block;
+            background: #000;
+        }
+
+        /* Player normal também com as correções */
+        .player-wrapper:not(:fullscreen) .video-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            position: relative;
         }
 
         body.shared-mode .player-controls {
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.7));
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
             padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 100;
         }
 
         body.shared-mode .player-wrapper:hover .player-controls {
@@ -605,15 +615,16 @@
             background: var(--danger);
             color: white;
             border: none;
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 12px;
+            font-size: 13px;
+            flex-shrink: 0;
         }
 
         .delete-btn:hover {
@@ -622,7 +633,7 @@
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
         }
 
-        /* Player Personalizado */
+        /* Player Personalizado - MODE NORMAL */
         .player-wrapper {
             background: var(--dark);
             border-radius: 15px;
@@ -648,16 +659,20 @@
         .player-wrapper:fullscreen .video-container {
             width: 100%;
             height: 100%;
-            aspect-ratio: unset;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding-bottom: 0;
+            position: relative;
         }
 
         .player-wrapper:fullscreen #videoPlayer {
-            width: 100%;
-            height: 100%;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
+            position: relative;
         }
 
         .player-wrapper:fullscreen .player-controls {
@@ -670,97 +685,135 @@
             padding: 20px;
         }
 
-        .video-container {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
-            position: relative;
-        }
-
-        /* Controles do Player */
+        /* ========== CONTROLES DO PLAYER - VISÍVEIS EM 100% ZOOM ========== */
         .player-controls {
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7));
+            padding: 12px 15px;
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 100;
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+        }
+
+        body.shared-mode .player-controls {
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
         }
 
         .player-wrapper:hover .player-controls {
             opacity: 1;
         }
 
+        /* Sempre mostrar controles quando pausado */
+        .player-wrapper:has(#videoPlayer:paused) .player-controls,
+        .preview-video-container:has(#previewVideoPlayer:paused) .player-controls {
+            opacity: 1 !important;
+        }
+
         .control-bar {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
+            margin-bottom: 0;
+            flex-wrap: nowrap;
+            width: 100%;
+            justify-content: space-between;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .control-bar::-webkit-scrollbar {
+            height: 3px;
         }
 
         .control-btn {
-            background: none;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
-            padding: 6px;
+            padding: 8px;
             border-radius: 50%;
-            transition: background 0.3s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 36px;
-            min-height: 36px;
+            min-width: 42px;
+            min-height: 42px;
+            flex-shrink: 0;
+        }
+
+        body.shared-mode .control-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .control-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        body.shared-mode .control-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
         }
 
         .progress-container {
             flex: 1;
-            height: 4px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
+            border-radius: 3px;
             cursor: pointer;
             position: relative;
-            min-width: 100px;
+            min-width: 60px;
+            margin: 0 12px;
+            flex-shrink: 1;
         }
 
         .progress-bar {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 2px;
+            border-radius: 3px;
             width: 0%;
             position: relative;
         }
 
         .progress-handle {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: white;
             border-radius: 50%;
             position: absolute;
-            right: -6px;
+            right: -7px;
             top: 50%;
             transform: translateY(-50%);
             opacity: 0;
             transition: opacity 0.3s;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
 
         .progress-container:hover .progress-handle {
             opacity: 1;
         }
 
+        .progress-container:hover {
+            height: 8px;
+        }
+
         .time-display {
             color: white;
             font-family: monospace;
-            font-size: 0.8rem;
-            min-width: 100px;
+            font-size: 14px;
+            min-width: 95px;
+            text-align: center;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .volume-control {
@@ -768,21 +821,24 @@
             align-items: center;
             gap: 8px;
             color: white;
+            min-width: 105px;
+            flex-shrink: 0;
         }
 
         .volume-slider {
-            width: 60px;
-            height: 4px;
+            width: 85px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
+            border-radius: 3px;
             position: relative;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .volume-level {
             height: 100%;
             background: white;
-            border-radius: 2px;
+            border-radius: 3px;
             width: 100%;
         }
 
@@ -853,13 +909,15 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.85rem;
+            font-size: 14px;
             justify-content: center;
+            white-space: nowrap;
+            min-width: 125px;
         }
 
         @media (min-width: 768px) {
             .btn {
-                min-width: 120px;
+                min-width: 125px;
             }
         }
 
@@ -1022,76 +1080,148 @@
             flex-wrap: wrap;
         }
 
-        /* Modal de Preview Aprimorado */
+        /* ========== MODAL DE PRÉ-VISUALIZAÇÃO - VISÍVEL EM 100% ZOOM ========== */
         #previewModal .modal-content {
-            max-width: 900px;
+            max-width: 95%;
+            width: 95%;
             padding: 0;
-            overflow: hidden;
+            overflow: visible;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+            color: white;
+            border-radius: 15px;
+        }
+
+        #previewModal .modal-content::before {
+            background: linear-gradient(90deg, #fff, var(--primary));
         }
 
         .preview-header {
-            padding: 25px 30px 15px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             text-align: left;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10;
         }
 
         .preview-header h3 {
             display: flex;
             align-items: center;
             gap: 10px;
-            color: var(--dark);
-            font-size: 1.4rem;
-            margin-bottom: 10px;
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
         }
 
         .preview-header p {
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
         }
 
-        .preview-body {
-            padding: 0;
-        }
-
+        /* CONTAINER DO VÍDEO DE PREVIEW - VISÍVEL EM 100% ZOOM */
         .preview-video-container {
-            width: 100%;
-            margin-bottom: 0;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: #000;
             position: relative;
+            overflow: hidden;
+            width: 100%;
+            min-height: 300px;
+            max-height: 60vh;
         }
 
+        /* VÍDEO DE PREVIEW - SEMPRE VISÍVEL */
         #previewVideoPlayer {
             width: 100%;
-            height: auto;
-            max-height: 50vh;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
             display: block;
+            background: #000;
+        }
+
+        /* Player controls for preview video */
+        .preview-video-container .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7));
+            padding: 12px 15px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+            min-height: 65px;
+        }
+
+        .preview-video-container:hover .player-controls {
+            opacity: 1;
         }
 
         .preview-info {
-            padding: 20px 30px;
-            background: var(--light);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            color: white;
         }
 
-        .preview-info h4 {
+        /* Campo para nome do vídeo na pré-visualização */
+        .title-edit-container {
             margin-bottom: 15px;
-            color: var(--dark);
-            font-size: 1.1rem;
+        }
+
+        .title-label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .title-input:focus {
+            outline: none;
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .title-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .preview-meta {
             display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
-            color: var(--gray);
+            gap: 15px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
             flex-wrap: wrap;
         }
 
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .meta-item i {
@@ -1099,8 +1229,51 @@
         }
 
         .preview-footer {
-            padding: 25px 30px;
+            padding: 15px 20px;
             text-align: center;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Botões de preview - VISÍVEIS EM 100% ZOOM */
+        .preview-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .preview-btn {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(79, 70, 229, 0.9));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-width: 205px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .preview-btn.secondary {
+            background: linear-gradient(135deg, rgba(107, 114, 128, 0.9), rgba(75, 85, 99, 0.9));
+        }
+
+        .preview-btn.secondary:hover {
+            box-shadow: 0 10px 20px rgba(75, 85, 99, 0.4);
         }
 
         /* Loading Spinner */
@@ -1133,50 +1306,249 @@
             font-size: 0.9rem;
         }
 
-        /* Responsividade */
-        @media (max-width: 768px) {
-            body.shared-mode .share-btn {
-                min-width: 140px;
-                padding: 10px 20px;
+        /* Botão de editar nome na lista */
+        .edit-title-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            margin-left: 5px;
+            flex-shrink: 0;
+        }
+
+        .edit-title-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* ========== AJUSTES ESPECÍFICOS PARA VISIBILIDADE EM 100% ZOOM ========== */
+
+        /* Ajustes para telas grandes (PC) em 100% zoom */
+        @media screen and (min-width: 1200px) {
+            #previewModal .modal-content {
+                max-width: 90%;
+                width: 1000px;
+                max-height: 85vh;
             }
             
-            .shared-badge {
-                top: 15px;
-                right: 15px;
-                padding: 6px 15px;
-                font-size: 0.8rem;
+            .preview-video-container {
+                min-height: 400px;
+                max-height: 55vh;
             }
             
-            .back-btn-simple {
-                top: 15px;
-                left: 15px;
-                padding: 10px 20px;
+            .preview-btn {
+                min-width: 220px;
+                padding: 14px 30px;
+                font-size: 15px;
             }
             
-            body.shared-mode .shared-video-card {
-                padding: 20px;
+            .title-input {
+                padding: 12px 18px;
+                font-size: 1rem;
             }
             
-            /* Ajustes para tela cheia em mobile */
-            .player-wrapper:fullscreen .player-controls {
-                padding: 15px;
+            .preview-header h3 {
+                font-size: 1.5rem;
             }
             
-            body.shared-mode .player-wrapper:fullscreen .player-controls {
-                padding: 15px;
+            .preview-header p {
+                font-size: 1rem;
             }
         }
 
-        @media (max-width: 480px) {
-            body.shared-mode .share-btn {
-                min-width: 120px;
+        /* Ajustes para telas médias */
+        @media screen and (max-width: 1199px) {
+            #previewModal .modal-content {
+                max-width: 95%;
+                width: 95%;
+            }
+            
+            .preview-video-container {
+                min-height: 350px;
+                max-height: 50vh;
+            }
+            
+            .preview-btn {
+                min-width: 180px;
+                padding: 11px 22px;
+                font-size: 13px;
+            }
+        }
+
+        /* Ajustes para mobile */
+        @media (max-width: 767px) {
+            #previewModal .modal-content {
+                max-width: 100%;
+                width: 100%;
+                max-height: 100vh;
+                height: 100vh;
+                border-radius: 0;
+                margin: 0;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+            
+            .preview-video-container {
+                min-height: 250px;
+                max-height: 45vh;
+            }
+            
+            /* Garantir que o vídeo seja sempre visível no mobile */
+            #previewVideoPlayer {
+                width: 100%;
+                height: auto;
+                max-height: 100%;
+            }
+            
+            .preview-actions {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .preview-btn {
+                width: 100%;
+                max-width: 280px;
+                min-width: auto;
+            }
+            
+            .share-input-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .social-share {
+                justify-content: center;
+            }
+        }
+
+        /* Para telas muito pequenas (celulares em modo retrato) */
+        @media (max-width: 480px) and (orientation: portrait) {
+            .preview-video-container {
+                min-height: 200px;
+                max-height: 40vh;
+            }
+            
+            .preview-header h3 {
+                font-size: 1.1rem;
+            }
+            
+            .preview-header p {
+                font-size: 0.8rem;
+            }
+            
+            .title-input {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .preview-btn {
                 font-size: 0.85rem;
-                padding: 8px 15px;
+                padding: 10px 15px;
+            }
+            
+            .preview-video-container {
+                min-height: 200px;
             }
             
             .preview-meta {
                 flex-direction: column;
-                gap: 10px;
+                gap: 5px;
+            }
+            
+            .video-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .control-bar {
+                gap: 5px;
+            }
+            
+            .time-display {
+                font-size: 0.7rem;
+                min-width: 80px;
+            }
+        }
+
+        /* Para telas em modo paisagem (celular deitado) */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .preview-video-container {
+                min-height: 200px;
+                max-height: 70vh;
+            }
+            
+            #previewModal .modal-content {
+                max-height: 95vh;
+            }
+        }
+
+        /* Botões do modo compartilhado */
+        .share-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            min-width: 165px;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        /* Ajustes responsivos para os botões de compartilhamento */
+        @media screen and (max-width: 999px) {
+            .share-btn {
+                min-width: 140px;
+                padding: 11px 22px;
+                font-size: 13px;
+            }
+        }
+
+        @media screen and (max-width: 800px) {
+            .share-btn {
+                min-width: 120px;
+                padding: 10px 20px;
+                font-size: 12px;
+                gap: 8px;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .share-btn {
+                min-width: 110px;
+                padding: 9px 18px;
+                font-size: 11px;
+                gap: 6px;
             }
         }
 
@@ -1242,6 +1614,102 @@
             visibility: visible;
             opacity: 1;
         }
+
+        /* CORREÇÃO: Player sempre visível quando há vídeo */
+        #videoPlayer:not([src=""]) ~ #noVideoMessage {
+            display: none !important;
+        }
+
+        .player-wrapper:has(#videoPlayer[src]:not([src=""])) {
+            display: block !important;
+        }
+
+        /* NOVO: Mensagem quando não há vídeo selecionado */
+        #noVideoMessage {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+            background: var(--light);
+            border-radius: 15px;
+            border: 2px dashed var(--primary);
+            margin: 20px 0;
+        }
+
+        /* ========== CORREÇÃO PARA BOTÕES NO MODO TELA CHEIA ========== */
+        .player-wrapper:fullscreen .player-controls,
+        .preview-video-container:fullscreen .player-controls {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            padding: 15px 20px !important;
+            min-height: 70px !important;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.8)) !important;
+            z-index: 10000 !important;
+        }
+
+        .player-wrapper:fullscreen .control-btn,
+        .preview-video-container:fullscreen .control-btn {
+            min-width: 48px !important;
+            min-height: 48px !important;
+            font-size: 18px !important;
+        }
+
+        .player-wrapper:fullscreen .progress-container,
+        .preview-video-container:fullscreen .progress-container {
+            height: 8px !important;
+        }
+
+        .player-wrapper:fullscreen .time-display,
+        .preview-video-container:fullscreen .time-display {
+            font-size: 15px !important;
+            min-width: 105px !important;
+        }
+
+        /* ========== MELHORIAS DE USABILIDADE ========== */
+        /* Indicador visual de que os controles são interativos */
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Melhorar visibilidade do progresso */
+        .progress-container:hover .progress-bar {
+            background: linear-gradient(90deg, var(--primary), #10b981);
+        }
+
+        /* Feedback visual para botões desabilitados */
+        .btn:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Garantir que botões não desapareçam */
+        .control-btn, .btn, .preview-btn, .share-btn, .delete-btn, .edit-title-btn {
+            flex-shrink: 0 !important;
+        }
+
+        /* CORREÇÃO CRÍTICA: Garantir que o modal de preview seja visível */
+        #previewModal {
+            z-index: 2001 !important;
+        }
+
+        #previewModal .modal-content {
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        /* Em mobile, mostrar controles sempre */
+        @media (max-width: 768px) {
+            .player-controls,
+            .preview-video-container .player-controls {
+                opacity: 0.9 !important;
+            }
+            
+            .player-wrapper:hover .player-controls,
+            .preview-video-container:hover .player-controls {
+                opacity: 1 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1280,17 +1748,41 @@
         </div>
     </div>
 
-    <!-- Modal de Preview Aprimorado -->
+    <!-- Modal de Preview Aprimorado - COM CAMPO DE NOME E CONTROLES -->
     <div class="modal" id="previewModal">
         <div class="modal-content">
             <div class="preview-header">
-                <h3><i class="fas fa-eye"></i> Pré-visualização do Vídeo</h3>
-                <p>Verifique se este é o vídeo correto antes de enviar para o Cloudinary</p>
+                <h3><i class="fas fa-video"></i> Pré-visualização do Vídeo</h3>
+                <p>Verifique o vídeo e defina um nome antes de enviar para o Cloudinary</p>
             </div>
             
             <div class="preview-body">
                 <div class="preview-video-container">
-                    <video id="previewVideoPlayer" controls></video>
+                    <video id="previewVideoPlayer" playsinline preload="metadata">
+                        Seu navegador não suporta a tag de vídeo.
+                    </video>
+                    
+                    <!-- Controles do player de preview -->
+                    <div class="player-controls">
+                        <div class="control-bar">
+                            <button class="control-btn tooltip" id="previewPlayBtn" title="Play">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="control-btn tooltip" id="previewPauseBtn" title="Pause">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <div class="progress-container" id="previewProgressContainer">
+                                <div class="progress-bar" id="previewProgressBar">
+                                    <div class="progress-handle"></div>
+                                </div>
+                            </div>
+                            <div class="time-display" id="previewTimeDisplay">00:00 / 00:00</div>
+                            <button class="control-btn tooltip" id="previewFullscreenBtn" title="Tela Cheia">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="loading-spinner" id="previewLoading">
                         <div class="spinner"></div>
                         <p>Carregando pré-visualização...</p>
@@ -1298,7 +1790,22 @@
                 </div>
                 
                 <div class="preview-info">
-                    <h4 id="previewVideoTitle">Carregando informações...</h4>
+                    <!-- CAMPO PARA NOME DO VÍDEO ADICIONADO -->
+                    <div class="title-edit-container">
+                        <label class="title-label" for="videoTitleInput">
+                            <i class="fas fa-heading"></i>
+                            Nome do Vídeo
+                        </label>
+                        <input type="text" id="videoTitleInput" class="title-input" 
+                               placeholder="Digite um nome para o vídeo (opcional)">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                            <i class="fas fa-info-circle" style="color: rgba(255,255,255,0.5); font-size: 0.8rem;"></i>
+                            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.7);">
+                                Se não preencher, será usado o nome original do arquivo
+                            </span>
+                        </div>
+                    </div>
+                    
                     <div class="preview-meta">
                         <div class="meta-item">
                             <i class="fas fa-hdd"></i>
@@ -1312,25 +1819,28 @@
                             <i class="fas fa-file-video"></i>
                             <span id="previewVideoFormat">MP4</span>
                         </div>
+                        <div class="meta-item">
+                            <i class="fas fa-expand"></i>
+                            <span id="previewVideoResolution">--</span>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="preview-footer">
-                <p class="modal-text" style="margin-bottom: 25px;">
-                    Após confirmar, o vídeo será enviado para o Cloudinary e aparecerá na sua lista.
-                </p>
-                
-                <div class="modal-actions">
-                    <button class="btn btn-success" id="confirmSaveBtn">
-                        <i class="fas fa-check"></i>
+                <div class="preview-actions">
+                    <button class="preview-btn" id="confirmSaveBtn">
+                        <i class="fas fa-cloud-upload-alt"></i>
                         Enviar para o Cloudinary
                     </button>
-                    <button class="btn btn-danger" id="cancelSaveBtn">
+                    <button class="preview-btn secondary" id="cancelSaveBtn">
                         <i class="fas fa-times"></i>
                         Cancelar
                     </button>
                 </div>
+                <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin-top: 10px;">
+                    Após confirmar, o vídeo será enviado para o Cloudinary e aparecerá na sua lista
+                </p>
             </div>
         </div>
     </div>
@@ -1360,6 +1870,39 @@
                 <button class="btn btn-danger" id="cancelUploadBtn">
                     <i class="fas fa-times"></i>
                     Cancelar Upload
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar nome do vídeo na lista -->
+    <div class="modal" id="editTitleModal">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                <i class="fas fa-edit"></i>
+                Editar Nome do Vídeo
+            </h3>
+            
+            <div class="title-edit-container" style="margin: 20px 0;">
+                <label class="title-label" for="editVideoTitleInput" style="color: var(--dark);">
+                    Novo nome para o vídeo
+                </label>
+                <input type="text" id="editVideoTitleInput" class="title-input" 
+                       placeholder="Digite o novo nome..." style="color: var(--dark); background: white;">
+            </div>
+            
+            <p class="modal-text">
+                Este nome aparecerá na lista e será usado ao compartilhar.
+            </p>
+            
+            <div class="modal-actions">
+                <button class="btn btn-success" id="confirmEditTitleBtn">
+                    <i class="fas fa-save"></i>
+                    Salvar
+                </button>
+                <button class="btn btn-danger" id="cancelEditTitleBtn">
+                    <i class="fas fa-times"></i>
+                    Cancelar
                 </button>
             </div>
         </div>
@@ -1463,7 +2006,7 @@
                     <!-- Player Personalizado -->
                     <div class="player-wrapper" id="playerWrapper" style="display: none;">
                         <div class="video-container">
-                            <video id="videoPlayer"></video>
+                            <video id="videoPlayer" playsinline></video>
                             <div class="loading-spinner" id="videoLoading">
                                 <div class="spinner"></div>
                                 <p>Carregando vídeo...</p>
@@ -1472,11 +2015,9 @@
                                 <div class="control-bar">
                                     <button class="control-btn tooltip" id="playBtn" title="Play">
                                         <i class="fas fa-play"></i>
-                                        <span class="tooltiptext">Play</span>
                                     </button>
                                     <button class="control-btn tooltip" id="pauseBtn" title="Pause">
                                         <i class="fas fa-pause"></i>
-                                        <span class="tooltiptext">Pause</span>
                                     </button>
                                     <div class="progress-container" id="progressContainer">
                                         <div class="progress-bar" id="progressBar">
@@ -1492,7 +2033,6 @@
                                     </div>
                                     <button class="control-btn tooltip" id="fullscreenBtn" title="Tela Cheia">
                                         <i class="fas fa-expand"></i>
-                                        <span class="tooltiptext">Tela Cheia</span>
                                     </button>
                                 </div>
                             </div>
@@ -1540,7 +2080,7 @@
                         <div class="link-group">
                             <div class="link-label">
                                 <i class="fas fa-video"></i>
-                                Link direto do vídeo
+                                Link direto do vídeo (MP4)
                             </div>
                             <div class="share-input-group">
                                 <input type="text" id="directLink" class="share-input direct-link" readonly 
@@ -1551,7 +2091,7 @@
                                 </button>
                             </div>
                             <p style="font-size: 0.8rem; color: var(--gray); margin-top: 5px;">
-                                Use este link para embedar ou compartilhar diretamente o vídeo
+                                Use este link para embedar ou compartilhar diretamente o vídeo MP4
                             </p>
                         </div>
                         
@@ -1616,10 +2156,11 @@
         const uploadingModal = document.getElementById('uploadingModal');
         const previewVideoPlayer = document.getElementById('previewVideoPlayer');
         const previewLoading = document.getElementById('previewLoading');
-        const previewVideoTitle = document.getElementById('previewVideoTitle');
         const previewVideoSize = document.getElementById('previewVideoSize');
         const previewVideoDuration = document.getElementById('previewVideoDuration');
         const previewVideoFormat = document.getElementById('previewVideoFormat');
+        const previewVideoResolution = document.getElementById('previewVideoResolution');
+        const videoTitleInput = document.getElementById('videoTitleInput');
         const confirmSaveBtn = document.getElementById('confirmSaveBtn');
         const cancelSaveBtn = document.getElementById('cancelSaveBtn');
         const cancelUploadBtn = document.getElementById('cancelUploadBtn');
@@ -1648,6 +2189,10 @@
         const sharedCopyBtn = document.getElementById('sharedCopyBtn');
         const totalVideos = document.getElementById('totalVideos');
         const totalSize = document.getElementById('totalSize');
+        const editTitleModal = document.getElementById('editTitleModal');
+        const editVideoTitleInput = document.getElementById('editVideoTitleInput');
+        const confirmEditTitleBtn = document.getElementById('confirmEditTitleBtn');
+        const cancelEditTitleBtn = document.getElementById('cancelEditTitleBtn');
 
         // Controles do player
         const playBtn = document.getElementById('playBtn');
@@ -1658,6 +2203,14 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeLevel = document.getElementById('volumeLevel');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+        // Controles do preview
+        const previewPlayBtn = document.getElementById('previewPlayBtn');
+        const previewPauseBtn = document.getElementById('previewPauseBtn');
+        const previewProgressContainer = document.getElementById('previewProgressContainer');
+        const previewProgressBar = document.getElementById('previewProgressBar');
+        const previewTimeDisplay = document.getElementById('previewTimeDisplay');
+        const previewFullscreenBtn = document.getElementById('previewFullscreenBtn');
 
         // Botões de compartilhamento
         const whatsappBtn = document.getElementById('whatsappBtn');
@@ -1674,6 +2227,9 @@
         let pendingVideoData = null;
         let isUploading = false;
         let currentUploadController = null;
+        let videoToEdit = null;
+        let isFullscreen = false;
+        let previewIsFullscreen = false;
 
         // ========== EVENT LISTENERS ==========
 
@@ -1714,18 +2270,28 @@
             }
         });
 
-        // Modal preview actions
+        // Modal preview actions - AGORA COM NOME PERSONALIZADO
         confirmSaveBtn.addEventListener('click', () => {
             if (pendingVideoFile) {
-                uploadVideoToCloudinary(pendingVideoFile);
+                // Obter nome personalizado ou usar o original
+                const customTitle = videoTitleInput.value.trim();
+                const originalName = pendingVideoFile.name;
+                const defaultTitle = originalName.replace(/\.[^/.]+$/, "");
+                const title = customTitle || defaultTitle;
+                
+                pendingVideoData.title = title;
+                
+                // Pausar o vídeo antes de fechar
+                previewVideoPlayer.pause();
+                
+                // Fechar modal e iniciar upload
+                previewModal.style.display = 'none';
+                uploadVideoToCloudinary(pendingVideoFile, title);
             }
         });
 
         cancelSaveBtn.addEventListener('click', () => {
-            previewModal.style.display = 'none';
-            pendingVideoFile = null;
-            pendingVideoData = null;
-            showNotification('Upload cancelado. O vídeo não foi enviado.');
+            closePreviewModal();
         });
 
         cancelUploadBtn.addEventListener('click', () => {
@@ -1738,6 +2304,104 @@
             }
         });
 
+        // Controles do preview
+        previewPlayBtn.addEventListener('click', () => {
+            previewVideoPlayer.play();
+            updatePreviewPlayPauseButtons();
+        });
+
+        previewPauseBtn.addEventListener('click', () => {
+            previewVideoPlayer.pause();
+            updatePreviewPlayPauseButtons();
+        });
+
+        previewProgressContainer.addEventListener('click', (e) => {
+            const rect = previewProgressContainer.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            previewVideoPlayer.currentTime = percent * previewVideoPlayer.duration;
+        });
+
+        previewFullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                const previewContainer = document.querySelector('.preview-video-container');
+                if (previewContainer.requestFullscreen) {
+                    previewContainer.requestFullscreen();
+                } else if (previewContainer.mozRequestFullScreen) {
+                    previewContainer.mozRequestFullScreen();
+                } else if (previewContainer.webkitRequestFullscreen) {
+                    previewContainer.webkitRequestFullscreen();
+                } else if (previewContainer.msRequestFullscreen) {
+                    previewContainer.msRequestFullscreen();
+                }
+                previewIsFullscreen = true;
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                previewIsFullscreen = false;
+            }
+        });
+
+        // Atualizar progresso do preview
+        previewVideoPlayer.addEventListener('timeupdate', () => {
+            if (previewVideoPlayer.duration) {
+                const percent = (previewVideoPlayer.currentTime / previewVideoPlayer.duration) * 100;
+                previewProgressBar.style.width = `${percent}%`;
+                
+                const formatTime = (time) => {
+                    const mins = Math.floor(time / 60);
+                    const secs = Math.floor(time % 60);
+                    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                };
+                
+                previewTimeDisplay.textContent = `${formatTime(previewVideoPlayer.currentTime)} / ${formatTime(previewVideoPlayer.duration)}`;
+            }
+        });
+
+        // Modal editar título
+        confirmEditTitleBtn.addEventListener('click', () => {
+            if (videoToEdit) {
+                const newTitle = editVideoTitleInput.value.trim();
+                if (newTitle && newTitle.length > 0) {
+                    videoToEdit.title = newTitle;
+                    
+                    // Atualizar no array de vídeos
+                    const index = videos.findIndex(v => v.publicId === videoToEdit.publicId);
+                    if (index !== -1) {
+                        videos[index].title = newTitle;
+                        localStorage.setItem('cloudinary_videos', JSON.stringify(videos));
+                        
+                        // Atualizar lista
+                        updateVideoList();
+                        
+                        // Se for o vídeo atual, atualizar título no player
+                        if (currentVideo && currentVideo.publicId === videoToEdit.publicId) {
+                            document.querySelector('#playerTitle').innerHTML = `
+                                <i class="fas fa-play-circle"></i>
+                                ${newTitle}
+                            `;
+                            generateShareLinks(videoToEdit);
+                        }
+                        
+                        showNotification('✅ Nome do vídeo atualizado!');
+                    }
+                }
+                editTitleModal.style.display = 'none';
+                videoToEdit = null;
+            }
+        });
+
+        cancelEditTitleBtn.addEventListener('click', () => {
+            editTitleModal.style.display = 'none';
+            videoToEdit = null;
+        });
+
         // Fechar modais clicando fora
         deleteModal.addEventListener('click', (e) => {
             if (e.target === deleteModal) {
@@ -1748,9 +2412,7 @@
 
         previewModal.addEventListener('click', (e) => {
             if (e.target === previewModal) {
-                previewModal.style.display = 'none';
-                pendingVideoFile = null;
-                pendingVideoData = null;
+                closePreviewModal();
             }
         });
 
@@ -1761,7 +2423,14 @@
             }
         });
 
-        // Controles do player
+        editTitleModal.addEventListener('click', (e) => {
+            if (e.target === editTitleModal) {
+                editTitleModal.style.display = 'none';
+                videoToEdit = null;
+            }
+        });
+
+        // Controles do player principal
         playBtn.addEventListener('click', () => {
             videoPlayer.play();
             isPlaying = true;
@@ -1802,11 +2471,16 @@
 
         previewVideoPlayer.addEventListener('canplay', () => {
             previewLoading.style.display = 'none';
+            updatePreviewPlayPauseButtons();
         });
 
         previewVideoPlayer.addEventListener('playing', () => {
             previewLoading.style.display = 'none';
+            updatePreviewPlayPauseButtons();
         });
+
+        previewVideoPlayer.addEventListener('play', updatePreviewPlayPauseButtons);
+        previewVideoPlayer.addEventListener('pause', updatePreviewPlayPauseButtons);
 
         // Progress bar
         progressContainer.addEventListener('click', (e) => {
@@ -1823,9 +2497,9 @@
             volumeLevel.style.width = `${percent * 100}%`;
         });
 
-        // Fullscreen
+        // Fullscreen - CORREÇÃO PARA BUG AO SAIR DA TELA CHEIA
         fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
+            if (!isFullscreen) {
                 if (playerWrapper.requestFullscreen) {
                     playerWrapper.requestFullscreen();
                 } else if (playerWrapper.mozRequestFullScreen) {
@@ -1835,6 +2509,7 @@
                 } else if (playerWrapper.msRequestFullscreen) {
                     playerWrapper.msRequestFullscreen();
                 }
+                isFullscreen = true;
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
@@ -1845,6 +2520,7 @@
                 } else if (document.msExitFullscreen) {
                     document.msExitFullscreen();
                 }
+                isFullscreen = false;
             }
         });
 
@@ -1859,7 +2535,16 @@
                 !document.webkitFullscreenElement && 
                 !document.mozFullScreenElement && 
                 !document.msFullscreenElement) {
-                console.log('Saiu do modo tela cheia');
+                isFullscreen = false;
+                previewIsFullscreen = false;
+                // Forçar redimensionamento do vídeo
+                setTimeout(() => {
+                    videoPlayer.style.width = '100%';
+                    videoPlayer.style.height = '100%';
+                    videoPlayer.style.objectFit = 'contain';
+                }, 100);
+            } else {
+                isFullscreen = true;
             }
         }
 
@@ -1953,56 +2638,148 @@
             // Armazenar arquivo para upload posterior
             pendingVideoFile = file;
             
-            // Criar URL local para preview
-            const videoUrl = URL.createObjectURL(file);
-            
             // Mostrar modal de preview
-            showVideoPreview(file, videoUrl);
+            showVideoPreview(file);
             
             // Limpar input
             fileInput.value = '';
         }
 
-        function showVideoPreview(file, videoUrl) {
+        function showVideoPreview(file) {
             console.log('Mostrando preview do vídeo:', file.name);
             
             // Mostrar modal de preview
             previewModal.style.display = 'flex';
             
             // Configurar player de preview
-            previewLoading.style.display = 'block';
-            previewVideoPlayer.src = videoUrl;
-            previewVideoTitle.textContent = file.name.replace(/\.[^/.]+$/, "");
-            previewVideoSize.textContent = `${formatFileSize(file.size)}`;
-            previewVideoFormat.textContent = `${file.type.split('/')[1].toUpperCase()}`;
+            previewLoading.style.display = 'flex';
+            previewPlayBtn.style.display = 'flex';
+            previewPauseBtn.style.display = 'none';
             
-            // Tentar obter duração do vídeo
-            previewVideoPlayer.addEventListener('loadedmetadata', () => {
+            // Limpar qualquer URL anterior
+            if (previewVideoPlayer.src) {
+                URL.revokeObjectURL(previewVideoPlayer.src);
+                previewVideoPlayer.src = '';
+            }
+            
+            // Criar URL local para preview
+            const videoUrl = URL.createObjectURL(file);
+            console.log('URL do vídeo criada:', videoUrl);
+            
+            previewVideoPlayer.src = videoUrl;
+            
+            // Definir nome padrão (sem extensão) no campo
+            const defaultTitle = file.name.replace(/\.[^/.]+$/, "");
+            videoTitleInput.value = defaultTitle;
+            
+            previewVideoSize.textContent = `${formatFileSize(file.size)}`;
+            previewVideoFormat.textContent = `${file.type.split('/')[1].toUpperCase() || 'VIDEO'}`;
+            previewVideoResolution.textContent = '--';
+            
+            // Configurar event listeners para o vídeo de preview
+            setupPreviewVideoListeners(file, videoUrl);
+            
+            // Carregar o vídeo
+            previewVideoPlayer.load();
+            
+            // Tentar reproduzir automaticamente para visualização (se permitido)
+            const playPromise = previewVideoPlayer.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log('Auto-play não permitido, mas o vídeo está carregado');
+                    // Mostrar instrução para o usuário
+                    previewLoading.innerHTML = `
+                        <div class="spinner"></div>
+                        <p>Vídeo carregado! Clique no botão play para visualizar</p>
+                        <button class="preview-btn" onclick="document.getElementById('previewVideoPlayer').play()" 
+                                style="margin-top: 10px; padding: 8px 16px; font-size: 0.85rem;">
+                            <i class="fas fa-play"></i> Reproduzir Vídeo
+                        </button>
+                    `;
+                });
+            }
+            
+            showNotification('✅ Arquivo carregado! Verifique o vídeo antes de enviar.');
+        }
+
+        function setupPreviewVideoListeners(file, videoUrl) {
+            // Remover listeners antigos
+            previewVideoPlayer.removeEventListener('loadedmetadata', handlePreviewMetadata);
+            previewVideoPlayer.removeEventListener('error', handlePreviewError);
+            
+            // Adicionar novos listeners
+            previewVideoPlayer.addEventListener('loadedmetadata', handlePreviewMetadata);
+            previewVideoPlayer.addEventListener('error', handlePreviewError);
+            
+            function handlePreviewMetadata() {
+                console.log('Metadados do vídeo carregados');
                 const duration = previewVideoPlayer.duration;
                 previewVideoDuration.textContent = `${formatDuration(duration)}`;
+                
+                // Obter resolução do vídeo
+                const width = previewVideoPlayer.videoWidth;
+                const height = previewVideoPlayer.videoHeight;
+                if (width && height) {
+                    previewVideoResolution.textContent = `${width}×${height}`;
+                }
                 
                 // Armazenar dados temporários
                 pendingVideoData = {
                     id: Date.now(),
                     originalName: file.name,
-                    title: file.name.replace(/\.[^/.]+$/, ""),
+                    title: videoTitleInput.value || file.name.replace(/\.[^/.]+$/, ""),
                     size: file.size,
                     type: file.type,
                     duration: duration,
-                    videoUrl: videoUrl
+                    videoUrl: videoUrl,
+                    resolution: width && height ? `${width}x${height}` : null
                 };
-            });
+                
+                // Esconder loading quando os metadados estiverem carregados
+                previewLoading.style.display = 'none';
+                console.log('Preview carregado com sucesso');
+            }
             
-            previewVideoPlayer.load();
-            
-            showNotification('✅ Arquivo carregado! Verifique o vídeo antes de enviar.');
+            function handlePreviewError(e) {
+                console.error('Erro no vídeo de preview:', e);
+                console.error('Código do erro:', previewVideoPlayer.error?.code);
+                console.error('Mensagem do erro:', previewVideoPlayer.error?.message);
+                previewLoading.innerHTML = `
+                    <div style="color: var(--danger); font-size: 40px; margin-bottom: 15px;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <p>Erro ao carregar o vídeo</p>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-top: 10px;">
+                        Formato de vídeo não suportado ou arquivo corrompido
+                    </p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 5px;">
+                        Código do erro: ${previewVideoPlayer.error?.code || 'Desconhecido'}
+                    </p>
+                `;
+            }
         }
 
-        function uploadVideoToCloudinary(file) {
-            console.log('Iniciando upload para Cloudinary:', file.name);
+        function updatePreviewPlayPauseButtons() {
+            if (!previewVideoPlayer.paused) {
+                previewPlayBtn.style.display = 'none';
+                previewPauseBtn.style.display = 'flex';
+            } else {
+                previewPlayBtn.style.display = 'flex';
+                previewPauseBtn.style.display = 'none';
+            }
+        }
+
+        function uploadVideoToCloudinary(file, title) {
+            console.log('Iniciando upload para Cloudinary:', file.name, 'Título:', title);
             
             // Fechar modal de preview e abrir modal de upload
             previewModal.style.display = 'none';
+            if (previewVideoPlayer.src) {
+                URL.revokeObjectURL(previewVideoPlayer.src);
+                previewVideoPlayer.src = '';
+            }
+            videoTitleInput.value = '';
             uploadingModal.style.display = 'flex';
             
             isUploading = true;
@@ -2036,7 +2813,7 @@
                     const response = JSON.parse(xhr.responseText);
                     console.log('Upload concluído:', response);
                     
-                    // Criar objeto de vídeo
+                    // Criar objeto de vídeo com link MP4 direto
                     const videoData = {
                         id: Date.now(),
                         publicId: response.public_id,
@@ -2046,9 +2823,10 @@
                         duration: response.duration || pendingVideoData?.duration || 0,
                         originalName: pendingVideoData?.originalName || file.name,
                         uploadedAt: new Date().toISOString(),
-                        title: pendingVideoData?.title || file.name.replace(/\.[^/.]+$/, ""),
+                        title: title,
                         shareId: generateShareId(),
-                        optimizedUrl: response.secure_url.replace('/upload/', '/upload/q_auto,f_auto/')
+                        // Link direto MP4 - adiciona .mp4 ao final para download direto
+                        directMp4Url: `${response.secure_url}.mp4`
                     };
                     
                     // Salvar localmente
@@ -2064,7 +2842,7 @@
                     currentUploadController = null;
                     
                     // Mostrar vídeo no player
-                    playVideo(videoData.optimizedUrl || videoData.url, videoData.title);
+                    playVideo(videoData.url, videoData.title);
                     generateShareLinks(videoData);
                     
                     showNotification('✅ Vídeo enviado com sucesso para o Cloudinary!');
@@ -2143,9 +2921,11 @@
                             </div>
                         </div>
                         <div class="video-actions">
+                            <button class="edit-title-btn tooltip edit-video-btn" data-public-id="${video.publicId}" title="Editar nome do vídeo">
+                                <i class="fas fa-edit"></i>
+                            </button>
                             <button class="delete-btn tooltip delete-video-btn" data-public-id="${video.publicId}" title="Excluir vídeo">
                                 <i class="fas fa-trash"></i>
-                                <span class="tooltiptext">Excluir vídeo</span>
                             </button>
                         </div>
                     </div>
@@ -2157,8 +2937,8 @@
             // Adicionar event listeners aos itens
             document.querySelectorAll('.video-item').forEach(item => {
                 item.addEventListener('click', (e) => {
-                    // Não ativar se clicou no botão de deletar
-                    if (!e.target.closest('.delete-video-btn')) {
+                    // Não ativar se clicou no botão de deletar ou editar
+                    if (!e.target.closest('.delete-video-btn') && !e.target.closest('.edit-video-btn')) {
                         const publicId = item.getAttribute('data-public-id');
                         const url = item.getAttribute('data-url');
                         const title = item.getAttribute('data-title');
@@ -2166,7 +2946,7 @@
                         const video = videos.find(v => v.publicId === publicId);
                         
                         if (video) {
-                            playVideo(video.optimizedUrl || video.url, video.title);
+                            playVideo(video.url, video.title);
                             generateShareLinks(video);
                         } else {
                             playVideo(url, title);
@@ -2192,6 +2972,25 @@
                     }
                 });
             });
+            
+            // Adicionar event listeners aos botões de editar
+            document.querySelectorAll('.edit-video-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const publicId = btn.getAttribute('data-public-id');
+                    const video = videos.find(v => v.publicId === publicId);
+                    
+                    if (video) {
+                        showEditTitleModal(video);
+                    }
+                });
+            });
+        }
+
+        function showEditTitleModal(video) {
+            videoToEdit = video;
+            editVideoTitleInput.value = video.title;
+            editTitleModal.style.display = 'flex';
         }
 
         function updateStats() {
@@ -2253,8 +3052,8 @@
             videoLoading.style.display = 'block';
             
             // Buscar vídeo na lista
-            const video = videos.find(v => v.url === url || v.optimizedUrl === url);
-            const playUrl = video && video.optimizedUrl ? video.optimizedUrl : url;
+            const video = videos.find(v => v.url === url);
+            const playUrl = video ? video.url : url;
             
             videoPlayer.src = playUrl;
             playerWrapper.style.display = 'block';
@@ -2276,6 +3075,16 @@
             // Resetar controles
             videoPlayer.load();
             updatePlayPauseButtons();
+            
+            // Forçar redimensionamento para evitar bug
+            setTimeout(() => {
+                videoPlayer.style.objectFit = 'contain';
+            }, 100);
+            
+            // Tentar reproduzir automaticamente
+            videoPlayer.play().catch(e => {
+                console.log('Auto-play não permitido');
+            });
         }
 
         function generateShareLinks(video) {
@@ -2289,11 +3098,11 @@
             // Gerar link para visualização limpa
             const cleanLink = generateCleanLink(video);
             
-            // Link direto do Cloudinary
-            const directVideoLink = video.url;
+            // Link direto do Cloudinary - FORÇA .mp4 para download direto
+            const directVideoLink = video.directMp4Url || `${video.url}.mp4`;
             
             console.log('Link limpo:', cleanLink);
-            console.log('Link direto:', directVideoLink);
+            console.log('Link direto MP4:', directVideoLink);
             
             // Atualizar campos
             shareLink.value = cleanLink;
@@ -2350,7 +3159,19 @@
             // Reproduzir vídeo
             playVideo(videoUrl, videoTitle);
             
-            // Mostrar instrução (sem auto-play)
+            // Atualizar links de compartilhamento
+            const video = {
+                url: videoUrl,
+                title: videoTitle
+            };
+            
+            // Configurar botões de compartilhamento
+            sharedCopyBtn.onclick = () => {
+                navigator.clipboard.writeText(window.location.href);
+                showNotification('✅ Link copiado!');
+            };
+            
+            // Mostrar instrução
             showNotification('🎬 Vídeo carregado! Clique no botão play para reproduzir.');
         }
 
@@ -2407,6 +3228,33 @@
             }, 3000);
         }
 
+        function closePreviewModal() {
+            // Pausar o vídeo
+            previewVideoPlayer.pause();
+            
+            // Limpar URL
+            if (previewVideoPlayer.src && previewVideoPlayer.src.startsWith('blob:')) {
+                URL.revokeObjectURL(previewVideoPlayer.src);
+            }
+            
+            // Resetar vídeo
+            previewVideoPlayer.src = '';
+            previewVideoPlayer.load();
+            
+            // Limpar campos
+            videoTitleInput.value = '';
+            
+            // Fechar modal
+            previewModal.style.display = 'none';
+            
+            // Limpar dados pendentes
+            pendingVideoFile = null;
+            pendingVideoData = null;
+            
+            // Mostrar notificação
+            showNotification('Upload cancelado. O vídeo não foi enviado.');
+        }
+
         // ========== INICIALIZAÇÃO ==========
 
         window.addEventListener('load', () => {
@@ -2434,7 +3282,7 @@
                 
                 if (videos.length > 0) {
                     const firstVideo = videos[0];
-                    playVideo(firstVideo.optimizedUrl || firstVideo.url, firstVideo.title);
+                    playVideo(firstVideo.url, firstVideo.title);
                     generateShareLinks(firstVideo);
                 } else {
                     playerWrapper.style.display = 'none';
@@ -2466,6 +3314,20 @@
                     showNotification('🎬 Vídeo finalizado. Clique em play para assistir novamente.');
                 }
             });
+            
+            // CORREÇÃO: Garantir que o player seja visível quando houver vídeo
+            const checkPlayerVisibility = () => {
+                if (videoPlayer.src && videoPlayer.src !== '') {
+                    playerWrapper.style.display = 'block';
+                    noVideoMessage.style.display = 'none';
+                }
+            };
+            
+            // Verificar a cada 100ms
+            setInterval(checkPlayerVisibility, 100);
+            
+            // Verificar imediatamente
+            checkPlayerVisibility();
         });
     </script>
 </body>
