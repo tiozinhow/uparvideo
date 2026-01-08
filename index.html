@@ -228,20 +228,53 @@
             opacity: 1;
         }
 
-        body.shared-mode .control-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        /* Sempre mostrar controles quando pausado */
+        .player-wrapper:has(#videoPlayer:paused) .player-controls,
+        .preview-video-container:has(#previewVideoPlayer:paused) .player-controls {
+            opacity: 1 !important;
+        }
+
+        .control-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0;
+            flex-wrap: nowrap;
+            width: 100%;
+            justify-content: space-between;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .control-bar::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
             color: white;
-            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px;
             border-radius: 50%;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 45px;
-            height: 45px;
-            font-size: 1.1rem;
+            min-width: 42px;
+            min-height: 42px;
+            flex-shrink: 0;
+        }
+
+        body.shared-mode .control-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
 
         body.shared-mode .control-btn:hover {
@@ -250,91 +283,82 @@
             box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
         }
 
-        body.shared-mode .share-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        body.shared-mode .share-btn {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .progress-container {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            min-width: 160px;
-            justify-content: center;
-            backdrop-filter: blur(10px);
+            position: relative;
+            min-width: 60px;
+            margin: 0 12px;
+            flex-shrink: 1;
         }
 
-        body.shared-mode .share-btn:hover {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(16, 185, 129, 0.4));
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: var(--primary);
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            width: 0%;
+            position: relative;
         }
 
-        body.shared-mode .share-btn.whatsapp {
-            background: linear-gradient(135deg, rgba(37, 211, 102, 0.2), rgba(37, 211, 102, 0.4));
-            border-color: rgba(37, 211, 102, 0.4);
+        .progress-handle {
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            right: -7px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
 
-        body.shared-mode .share-btn.telegram {
-            background: linear-gradient(135deg, rgba(0, 136, 204, 0.2), rgba(0, 136, 204, 0.4));
-            border-color: rgba(0, 136, 204, 0.4);
+        .progress-container:hover .progress-handle {
+            opacity: 1;
         }
 
-        /* Botão Voltar Moderno */
-        .back-btn-simple {
-            position: fixed;
-            top: 25px;
-            left: 25px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(79, 70, 229, 0.9));
+        .progress-container:hover {
+            height: 8px;
+        }
+
+        .time-display {
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            font-weight: 600;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
+            font-family: monospace;
+            font-size: 14px;
+            min-width: 95px;
+            text-align: center;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
-        .back-btn-simple:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
-        }
-
-        /* Indicador de Modo Compartilhado */
-        .shared-badge {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
+        .volume-control {
             display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            color: white;
+            min-width: 105px;
+            flex-shrink: 0;
+        }
+
+        .volume-slider {
+            width: 85px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .volume-level {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            width: 100%;
         }
 
         /* ========== MODO NORMAL ========== */
@@ -391,6 +415,38 @@
             color: var(--gray);
             font-size: 0.9rem;
             margin-top: 5px;
+        }
+
+        /* BOTÃO GERENCIAR PASTAS */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
         }
 
         .stats {
@@ -599,6 +655,34 @@
             font-size: 0.75rem;
             color: var(--gray);
             flex-wrap: wrap;
+        }
+
+        /* Info de pasta nos vídeos */
+        .video-folder-info {
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .folder-tag {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .folder-tag i {
+            font-size: 9px;
         }
 
         /* Botão de deletar */
@@ -897,38 +981,6 @@
         .share-input.direct-link {
             border-color: var(--secondary);
             background: rgba(16, 185, 129, 0.05);
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            justify-content: center;
-            white-space: nowrap;
-            min-width: 125px;
-        }
-
-        @media (min-width: 768px) {
-            .btn {
-                min-width: 125px;
-            }
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
         }
 
         .btn-success {
@@ -1330,6 +1382,78 @@
             box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
         }
 
+        /* Botões do modo compartilhado */
+        .share-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            min-width: 165px;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        /* Botão Voltar Moderno */
+        .back-btn-simple {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(79, 70, 229, 0.9));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .back-btn-simple:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Indicador de Modo Compartilhado */
+        .shared-badge {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
         /* ========== AJUSTES ESPECÍFICOS PARA VISIBILIDADE EM 100% ZOOM ========== */
 
         /* Ajustes para telas grandes (PC) em 100% zoom */
@@ -1496,33 +1620,6 @@
             #previewModal .modal-content {
                 max-height: 95vh;
             }
-        }
-
-        /* Botões do modo compartilhado */
-        .share-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        .share-btn {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-            min-width: 165px;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            white-space: nowrap;
         }
 
         /* Ajustes responsivos para os botões de compartilhamento */
@@ -1909,7 +2006,7 @@
     </div>
 
     <div class="container">
-        <!-- Header -->
+        <!-- Header Modificado com Botão de Pastas -->
         <header id="mainHeader">
             <div class="header-content">
                 <div class="logo">
@@ -1921,18 +2018,24 @@
                         <p>Compartilhe vídeos com qualquer pessoa, em qualquer lugar</p>
                     </div>
                 </div>
-                <div class="stats">
-                    <div class="stat">
-                        <span class="stat-number" id="totalVideos">0</span>
-                        <span class="stat-label">Vídeos</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number" id="totalSize">0MB</span>
-                        <span class="stat-label">Armazenamento</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">$0</span>
-                        <span class="stat-label">Custo mensal</span>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="manageFoldersBtn">
+                        <i class="fas fa-folder"></i>
+                        Gerenciar Pastas
+                    </button>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-number" id="totalVideos">0</span>
+                            <span class="stat-label">Vídeos</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="totalSize">0MB</span>
+                            <span class="stat-label">Armazenamento</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">$0</span>
+                            <span class="stat-label">Custo mensal</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2193,6 +2296,7 @@
         const editVideoTitleInput = document.getElementById('editVideoTitleInput');
         const confirmEditTitleBtn = document.getElementById('confirmEditTitleBtn');
         const cancelEditTitleBtn = document.getElementById('cancelEditTitleBtn');
+        const manageFoldersBtn = document.getElementById('manageFoldersBtn');
 
         // Controles do player
         const playBtn = document.getElementById('playBtn');
@@ -2232,6 +2336,11 @@
         let previewIsFullscreen = false;
 
         // ========== EVENT LISTENERS ==========
+
+        // Botão Gerenciar Pastas
+        manageFoldersBtn.addEventListener('click', () => {
+            window.location.href = 'pasta.html';
+        });
 
         // Upload - usando input de arquivo em vez do widget
         uploadArea.addEventListener('click', () => {
@@ -2892,6 +3001,9 @@
         function updateVideoList() {
             console.log('Atualizando lista de vídeos, total:', videos.length);
             
+            // Carregar pastas para mostrar em qual pasta está cada vídeo
+            const folders = JSON.parse(localStorage.getItem('video_folders') || '[]');
+            
             if (videos.length === 0) {
                 videoList.innerHTML = `
                     <div class="empty-state">
@@ -2907,6 +3019,19 @@
 
             let html = '';
             videos.forEach(video => {
+                // Verificar em quais pastas este vídeo está
+                let folderInfo = '';
+                folders.forEach(folder => {
+                    if (folder.videoIds && folder.videoIds.includes(video.id.toString())) {
+                        folderInfo += `
+                            <div class="folder-tag" title="${folder.name}">
+                                <i class="fas fa-folder" style="color: ${folder.color};"></i>
+                                ${folder.name}
+                            </div>
+                        `;
+                    }
+                });
+                
                 html += `
                     <div class="video-item" data-public-id="${video.publicId}" data-url="${video.url}" data-title="${video.title}">
                         <div class="video-thumb">
@@ -2919,6 +3044,7 @@
                                 <span>${formatFileSize(video.bytes)}</span>
                                 <span>${new Date(video.uploadedAt).toLocaleDateString()}</span>
                             </div>
+                            ${folderInfo ? `<div class="video-folder-info">${folderInfo}</div>` : ''}
                         </div>
                         <div class="video-actions">
                             <button class="edit-title-btn tooltip edit-video-btn" data-public-id="${video.publicId}" title="Editar nome do vídeo">
