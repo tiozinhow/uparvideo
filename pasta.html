@@ -4,7 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VideoShare - Organizar em Pastas</title>
-    
+    <!-- VERIFICA MANUTENÇÃO -->
+    <script>
+    (async () => {
+        try {
+            const res = await fetch("/config.json", { cache: "no-store" });
+            const data = await res.json();
+
+            if (data.maintenance === true) {
+                location.replace("/maintenance.html");
+            }
+        } catch (e) {
+            console.error("Erro ao verificar manutenção");
+        }
+    })();
+    </script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
