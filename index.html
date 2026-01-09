@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- VERIFICA MANUTENÇÃO -->
     <script>
     (async () => {
@@ -43,6 +43,90 @@
             box-sizing: border-box;
         }
 
+        /* ========== AVISO DO SITE ========== */
+        .site-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            color: white;
+            padding: 12px 50px 12px 20px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: slideDown 0.5s ease;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .site-warning.show {
+            display: block;
+        }
+
+        .warning-content {
+            display: flex;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            gap: 12px;
+        }
+
+        .warning-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .warning-text {
+            flex: 1;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .warning-close {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .warning-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -50,6 +134,11 @@
             color: var(--dark);
             line-height: 1.6;
             transition: background 0.5s ease;
+        }
+
+        /* Ajuste quando aviso está visível */
+        body.has-warning .container {
+            padding-top: 70px;
         }
 
         /* ========== MODO COMPARTILHADO - DESIGN MODERNO ========== */
@@ -1454,6 +1543,280 @@
             backdrop-filter: blur(10px);
         }
 
+        /* ========== AJUSTES PARA MOBILE ========== */
+        @media (max-width: 768px) {
+            body.has-warning .container {
+                padding-top: 80px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo p {
+                display: none;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+            }
+            
+            .stats {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .stat-number {
+                font-size: 1.2rem;
+            }
+            
+            .card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .card-title {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+                border-width: 2px;
+            }
+            
+            .upload-icon {
+                font-size: 40px;
+            }
+            
+            .upload-text {
+                font-size: 1.1rem;
+            }
+            
+            .upload-subtext {
+                font-size: 0.8rem;
+            }
+            
+            .video-thumb {
+                width: 50px;
+                height: 35px;
+                font-size: 12px;
+            }
+            
+            .video-name {
+                font-size: 0.85rem;
+            }
+            
+            .video-meta {
+                font-size: 0.65rem;
+                gap: 8px;
+            }
+            
+            .player-wrapper {
+                border-radius: 12px;
+            }
+            
+            .player-controls {
+                padding: 10px;
+                min-height: 55px;
+            }
+            
+            .control-btn {
+                min-width: 36px;
+                min-height: 36px;
+                font-size: 14px;
+                padding: 6px;
+            }
+            
+            .time-display {
+                font-size: 11px;
+                min-width: 75px;
+            }
+            
+            .progress-container {
+                height: 5px;
+                margin: 0 8px;
+            }
+            
+            .volume-slider {
+                width: 60px;
+            }
+            
+            .share-box {
+                padding: 15px;
+            }
+            
+            .share-input-group {
+                flex-direction: column;
+            }
+            
+            .share-input {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                width: 100%;
+            }
+            
+            .social-share {
+                justify-content: center;
+            }
+            
+            .social-share .btn {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .preview-btn {
+                min-width: auto;
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .preview-actions {
+                gap: 10px;
+            }
+            
+            .preview-video-container {
+                min-height: 200px;
+                max-height: 40vh;
+            }
+            
+            .title-input {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .modal-content {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .modal-title {
+                font-size: 1.2rem;
+            }
+            
+            .modal-text {
+                font-size: 0.9rem;
+            }
+            
+            .back-btn-simple {
+                top: 15px;
+                left: 15px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .shared-badge {
+                top: 15px;
+                right: 15px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .site-warning {
+                padding: 10px 40px 10px 15px;
+                font-size: 0.8rem;
+            }
+            
+            .warning-icon {
+                font-size: 1rem;
+            }
+            
+            .warning-close {
+                width: 25px;
+                height: 25px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Para telas muito pequenas */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .upload-area {
+                padding: 25px 10px;
+            }
+            
+            .video-item {
+                padding: 10px;
+            }
+            
+            .video-actions {
+                gap: 5px;
+            }
+            
+            .delete-btn, .edit-title-btn {
+                width: 25px;
+                height: 25px;
+                font-size: 11px;
+            }
+            
+            .share-btn {
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 0.8rem;
+            }
+            
+            .site-warning {
+                padding: 8px 35px 8px 12px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Para landscape mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .preview-video-container {
+                min-height: 150px;
+                max-height: 50vh;
+            }
+            
+            #previewModal .modal-content {
+                max-height: 95vh;
+            }
+            
+            .video-list {
+                max-height: 200px;
+            }
+        }
+
         /* ========== AJUSTES ESPECÍFICOS PARA VISIBILIDADE EM 100% ZOOM ========== */
 
         /* Ajustes para telas grandes (PC) em 100% zoom */
@@ -1607,18 +1970,6 @@
             .time-display {
                 font-size: 0.7rem;
                 min-width: 80px;
-            }
-        }
-
-        /* Para telas em modo paisagem (celular deitado) */
-        @media (max-height: 600px) and (orientation: landscape) {
-            .preview-video-container {
-                min-height: 200px;
-                max-height: 70vh;
-            }
-            
-            #previewModal .modal-content {
-                max-height: 95vh;
             }
         }
 
@@ -1810,6 +2161,15 @@
     </style>
 </head>
 <body>
+    <!-- AVISO DO SITE -->
+    <div class="site-warning" id="siteWarning">
+        <div class="warning-content">
+            <span class="warning-icon">⚠️</span>
+            <span class="warning-text">ATENÇÃO: Seus vídeos são armazenados no Cloudinary (nuvem). Os links são salvos localmente e podem ser perdidos se limpar o navegador.</span>
+            <button class="warning-close" id="closeWarningBtn">×</button>
+        </div>
+    </div>
+
     <!-- Botão Voltar (visível apenas no modo compartilhado) -->
     <button class="back-btn-simple" id="backBtn" style="display: none;">
         <i class="fas fa-arrow-left"></i>
@@ -2249,6 +2609,8 @@
         const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
         
         // Elementos DOM
+        const siteWarning = document.getElementById('siteWarning');
+        const closeWarningBtn = document.getElementById('closeWarningBtn');
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         const uploadProgress = document.getElementById('uploadProgress');
@@ -2334,6 +2696,24 @@
         let videoToEdit = null;
         let isFullscreen = false;
         let previewIsFullscreen = false;
+
+        // ========== AVISO DO SITE ==========
+        function showSiteWarning() {
+            const warningClosed = localStorage.getItem('site_warning_closed');
+            
+            if (!warningClosed) {
+                siteWarning.classList.add('show');
+                document.body.classList.add('has-warning');
+            }
+        }
+
+        function closeSiteWarning() {
+            siteWarning.classList.remove('show');
+            document.body.classList.remove('has-warning');
+            localStorage.setItem('site_warning_closed', 'true');
+        }
+
+        closeWarningBtn.addEventListener('click', closeSiteWarning);
 
         // ========== EVENT LISTENERS ==========
 
@@ -3385,6 +3765,9 @@
 
         window.addEventListener('load', () => {
             console.log('Vídeos carregados do localStorage:', videos);
+            
+            // Mostrar aviso do site
+            showSiteWarning();
             
             // Atualizar estatísticas
             updateStats();
