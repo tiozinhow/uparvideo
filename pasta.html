@@ -1992,6 +1992,12 @@
 
         folderForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Prevenir múltiplos envios
+            if (saveFolderBtn.disabled) {
+                return;
+            }
+            
             saveFolder();
         });
 
@@ -2303,65 +2309,101 @@
             return colors[Math.abs(hash) % colors.length];
         }
 
-        // Funções principais
+        // FUNÇÃO SALVAR PASTA CORRIGIDA
         function saveFolder() {
+            // Prevenir múltiplos envios
+            if (saveFolderBtn.disabled) {
+                return;
+            }
+            
+            // Salvar texto original do botão
+            const originalButtonHTML = saveFolderBtn.innerHTML;
+            
+            // Mostrar estado de carregamento
             saveFolderBtn.innerHTML = '<div class="loading"></div>';
             saveFolderBtn.disabled = true;
             
+            // Usar setTimeout para dar feedback visual, mas não demorar muito
             setTimeout(() => {
-                const folderData = {
-                    id: currentFolder ? currentFolder.id : 'folder_' + Date.now(),
-                    name: folderNameInput.value.trim(),
-                    description: folderDescriptionInput.value.trim(),
-                    color: folderColorInput.value,
-                    tags: folderTagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag),
-                    createdAt: currentFolder ? currentFolder.createdAt : new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    videoIds: currentFolder ? currentFolder.videoIds : []
-                };
+                try {
+                    const folderData = {
+                        id: currentFolder ? currentFolder.id : 'folder_' + Date.now(),
+                        name: folderNameInput.value.trim(),
+                        description: folderDescriptionInput.value.trim(),
+                        color: folderColorInput.value,
+                        tags: folderTagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                        createdAt: currentFolder ? currentFolder.createdAt : new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        videoIds: currentFolder ? currentFolder.videoIds : []
+                    };
 
-                // Verificar se já existe uma pasta com esse nome
-                if (!currentFolder) {
-                    const existingFolder = folders.find(f => f.name.toLowerCase() === folderData.name.toLowerCase());
-                    if (existingFolder) {
-                        showNotification('❌ Já existe uma pasta com esse nome!', true);
-                        saveFolderBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Pasta';
-                        saveFolderBtn.disabled = false;
+                    // Validar nome da pasta
+                    if (!folderData.name) {
+                        showNotification('❌ Por favor, digite um nome para a pasta!', true);
+                        restoreSaveButton();
                         return;
                     }
-                }
 
-                if (currentFolder) {
-                    // Atualizar pasta existente
-                    const index = folders.findIndex(f => f.id === currentFolder.id);
-                    if (index !== -1) {
-                        folders[index] = folderData;
+                    // Verificar se já existe uma pasta com esse nome (ignorando a pasta atual em edição)
+                    const existingFolder = folders.find(f => 
+                        f.name.toLowerCase() === folderData.name.toLowerCase() && 
+                        (!currentFolder || f.id !== currentFolder.id)
+                    );
+                    
+                    if (existingFolder) {
+                        showNotification('❌ Já existe uma pasta com esse nome!', true);
+                        restoreSaveButton();
+                        return;
                     }
-                } else {
-                    // Adicionar nova pasta
-                    folders.unshift(folderData);
-                }
 
-                // Salvar no localStorage
-                localStorage.setItem('video_folders', JSON.stringify(folders));
-                
-                // Atualizar a interface
-                updateFoldersList();
-                
-                // Resetar formulário
-                resetFolderForm();
-                
-                // Mostrar notificação
-                showNotification(currentFolder ? '✅ Pasta atualizada com sucesso!' : '✅ Pasta criada com sucesso!');
-                
-                // Se era uma edição, voltar para a visualização
-                if (currentFolder) {
-                    selectFolder(folderData.id);
+                    if (currentFolder) {
+                        // Atualizar pasta existente
+                        const index = folders.findIndex(f => f.id === currentFolder.id);
+                        if (index !== -1) {
+                            folders[index] = folderData;
+                            // Atualizar a pasta atual com os novos dados
+                            currentFolder = folderData;
+                        }
+                    } else {
+                        // Adicionar nova pasta
+                        folders.unshift(folderData);
+                    }
+
+                    // Salvar no localStorage
+                    localStorage.setItem('video_folders', JSON.stringify(folders));
+                    
+                    // Atualizar a lista de pastas
+                    updateFoldersList();
+                    
+                    // Mostrar notificação
+                    showNotification(currentFolder ? '✅ Pasta atualizada com sucesso!' : '✅ Pasta criada com sucesso!');
+                    
+                    // Se era uma edição, atualizar a interface da pasta selecionada
+                    if (currentFolder) {
+                        // Atualizar o cabeçalho da pasta
+                        updateFolderHeader(currentFolder);
+                        // Atualizar a lista de vídeos
+                        updateVideosInFolder();
+                    }
+                    
+                    // Resetar formulário (para nova pasta ou após edição)
+                    resetFolderForm();
+                    
+                } catch (error) {
+                    console.error('Erro ao salvar pasta:', error);
+                    showNotification('❌ Erro ao salvar pasta!', true);
+                } finally {
+                    // Sempre restaurar o botão, independente de sucesso ou erro
+                    restoreSaveButton();
                 }
-                
-                saveFolderBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Pasta';
-                saveFolderBtn.disabled = false;
-            }, 500);
+            }, 500); // Tempo reduzido para melhor experiência
+        }
+
+        // Adicione esta função auxiliar para restaurar o botão
+        function restoreSaveButton() {
+            saveFolderBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Pasta';
+            saveFolderBtn.disabled = false;
+            saveFolderBtn.style.opacity = '1';
         }
 
         function updateFoldersList() {
@@ -2452,6 +2494,32 @@
             }
             
             // Atualizar a interface com design melhorado
+            updateFolderHeader(folder);
+            
+            // Mostrar o card de gerenciamento
+            manageFolderCard.style.display = 'block';
+            
+            // Atualizar a lista de vídeos na pasta
+            updateVideosInFolder();
+            
+            // Rolagem suave até a seção de gerenciamento
+            setTimeout(() => {
+                manageFolderCard.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start'
+                });
+            }, 300);
+            
+            // Resetar formulário para modo de criação
+            resetFolderForm();
+            
+            showNotification(`✅ Pasta "${folder.name}" selecionada`);
+        }
+
+        // Função para atualizar o cabeçalho da pasta
+        function updateFolderHeader(folder) {
+            if (!folder) return;
+            
             folderNameDisplay.textContent = folder.name;
             selectedFolderIcon.style.background = `linear-gradient(135deg, ${folder.color}, ${adjustColor(folder.color, -30)})`;
             selectedFolderIcon.style.color = 'white';
@@ -2478,22 +2546,6 @@
                     folderTagsDisplay.appendChild(tagElement);
                 });
             }
-            
-            // Mostrar o card de gerenciamento
-            manageFolderCard.style.display = 'block';
-            
-            // Atualizar a lista de vídeos na pasta
-            updateVideosInFolder();
-            
-            // Rolagem suave até a seção de gerenciamento
-            setTimeout(() => {
-                manageFolderCard.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start'
-                });
-            }, 300);
-            
-            showNotification(`✅ Pasta "${folder.name}" selecionada`);
         }
 
         function editFolder(folderId) {
@@ -2511,10 +2563,13 @@
             
             // Atualizar o título do formulário
             document.querySelector('.card-title i').className = 'fas fa-edit';
-            document.querySelector('.card-title').querySelector('span').textContent = 'Editar Pasta';
+            document.querySelector('.card-title').innerHTML = '<i class="fas fa-edit"></i> Editar Pasta';
             
             // Scroll para o formulário
             folderForm.scrollIntoView({ behavior: 'smooth' });
+            
+            // Focar no campo de nome
+            folderNameInput.focus();
             
             showNotification(`✏️ Editando pasta "${folder.name}"`);
         }
@@ -2852,7 +2907,10 @@
             
             setTimeout(() => {
                 const folderIndex = folders.findIndex(f => f.id === currentFolder.id);
-                if (folderIndex === -1) return;
+                if (folderIndex === -1) {
+                    restoreAddVideosButton();
+                    return;
+                }
 
                 let addedCount = 0;
                 let alreadyInFolder = 0;
@@ -2886,9 +2944,13 @@
                     showNotification(`ℹ️ Nenhum vídeo novo foi adicionado. ${alreadyInFolder} vídeo(s) já estavam na pasta.`);
                 }
                 
-                confirmAddMultipleVideosBtn.innerHTML = '<i class="fas fa-check"></i> Adicionar Selecionados';
-                confirmAddMultipleVideosBtn.disabled = false;
+                restoreAddVideosButton();
             }, 500);
+        }
+
+        function restoreAddVideosButton() {
+            confirmAddMultipleVideosBtn.innerHTML = '<i class="fas fa-check"></i> Adicionar Selecionados (<span id="selectedCount">0</span>)';
+            confirmAddMultipleVideosBtn.disabled = false;
         }
 
         function removeVideoFromFolder() {
@@ -2913,12 +2975,21 @@
         }
 
         function resetFolderForm() {
-            currentFolder = null;
-            folderForm.reset();
-            folderColorInput.value = '#6366f1';
-            colorPreview.style.backgroundColor = '#6366f1';
+            // Não limpar currentFolder se estivermos visualizando uma pasta
+            if (!currentFolder) {
+                folderForm.reset();
+                folderColorInput.value = '#6366f1';
+                colorPreview.style.backgroundColor = '#6366f1';
+            } else {
+                // Se temos uma pasta selecionada, apenas limpar os campos do formulário
+                folderNameInput.value = '';
+                folderDescriptionInput.value = '';
+                folderColorInput.value = '#6366f1';
+                folderTagsInput.value = '';
+                colorPreview.style.backgroundColor = '#6366f1';
+            }
             document.querySelector('.card-title i').className = 'fas fa-plus-circle';
-            document.querySelector('.card-title').querySelector('span').textContent = 'Criar Nova Pasta';
+            document.querySelector('.card-title').innerHTML = '<i class="fas fa-plus-circle"></i> Criar/Editar Pasta';
         }
 
         function formatDuration(seconds) {
@@ -2939,7 +3010,11 @@
         function showNotification(message, isError = false) {
             notification.textContent = message;
             notification.className = 'notification' + (isError ? ' error' : '');
-            notification.style.display = 'block';
+            notification.style.display = 'flex';
+            notification.style.alignItems = 'center';
+            
+            // Garantir que a notificação esteja no topo
+            notification.style.zIndex = '9999';
             
             setTimeout(() => {
                 notification.style.display = 'none';
